@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import p_heu.entity.Node;
+import p_heu.entity.pattern.Pattern;
 
 public class Sequence {
 	private List<Node> nodes;
@@ -24,5 +25,10 @@ public class Sequence {
 	
 	public boolean isFinished() {
 		return this.finished;
+	}
+	
+	public List<Pattern> matchPattern() {
+		//TODO 序列或子序列的pattern匹配算法
+		return null;
 	}
 }
