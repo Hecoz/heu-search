@@ -3,19 +3,19 @@ package p_heu.entity;
 import gov.nasa.jpf.vm.RestorableVMState;
 
 public class SearchState {
-	private int parentStateId;
-	private RestorableVMState[] children;
+	private int stateId;
+	private RestorableVMState state;
 	
-	public SearchState(int parentStateId, RestorableVMState[] children) {
-		this.parentStateId = parentStateId;
-		this.children = children;
+	public SearchState(int stateId, RestorableVMState state) {
+		this.stateId = stateId;
+		this.state = state;
 	}
 	
-	public int getParentStateId() {
-		return this.parentStateId;
+	public int getStateId() {
+		return this.stateId;
 	}
 	
-	public RestorableVMState[] getChildren() {
-		return this.children;
+	public RestorableVMState getState() {
+		return this.state;
 	}
 }
