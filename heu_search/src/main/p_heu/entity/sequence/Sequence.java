@@ -11,12 +11,14 @@ public class Sequence {
 	private List<Node> nodes;
 	private List<SearchState> states;
 	private boolean finished;
+	private boolean result;
 	private int distance;
 	
 	public Sequence() {
 		this.nodes = new ArrayList<>();
 		this.states = new ArrayList<>();
 		this.finished = false;
+		this.result = false;
 		this.distance = 0;
 	}
 	
@@ -39,10 +41,20 @@ public class Sequence {
 	public boolean isFinished() {
 		return this.finished;
 	}
-	
-	public void setFinished(boolean finished) {
-		this.finished = finished;
-	}
+
+	public boolean getResult() {
+	    return this.result;
+    }
+
+    public void setResult(boolean result) {
+	    this.result = result;
+	    if (this.finished) {
+	        throw new RuntimeException("Already a finished sequence.");
+        }
+        else {
+	        this.finished = true;
+        }
+    }
 	
 	public int getDistance() {
 		return this.distance;
@@ -53,7 +65,7 @@ public class Sequence {
 	}
 	
 	public List<Pattern> matchPattern() {
-		//TODO 序列或子序列的pattern匹配算法
+		//TODO 搴忓垪鎴栧瓙搴忓垪鐨刾attern鍖归厤绠楁硶
 		return null;
 	}
 }
