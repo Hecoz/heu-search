@@ -52,4 +52,8 @@ public class ReadWriteNode extends Node {
 		}
 		return false;
 	}
+
+	public String toString() {
+		return "ReadWriteNode[" + id + "," + element + "," + field + "," + type + "," + thread + "," + position + "]";
+	}
 }

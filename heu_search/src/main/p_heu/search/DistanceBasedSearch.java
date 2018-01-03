@@ -5,34 +5,23 @@ import java.util.*;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.search.Search;
 import gov.nasa.jpf.vm.VM;
+import p_heu.entity.Node;
 import p_heu.entity.sequence.Sequence;
 
 public abstract class DistanceBasedSearch extends Search {
 
     protected Set<Sequence> correctSeqs;
 	protected LinkedList<Sequence> queue;
-	protected Comparator<Sequence> comparator;
 
-	public DistanceBasedSearch(Config config, VM vm) {
+	protected DistanceBasedSearch(Config config, VM vm) {
 		super(config, vm);
-		// TODO Auto-generated constructor stub
         this.correctSeqs = new HashSet<>();
 		this.queue = new LinkedList<>();
-		this.comparator = new DistanceComparator();
-	}
-	
-	private class DistanceComparator implements Comparator<Sequence> {
-
-		@Override
-		public int compare(Sequence seq1, Sequence seq2) {
-			return Integer.compare(seq1.getDistance(), seq2.getDistance());
-		}
-		
 	}
 
 	@Override
 	public void search() {
-		// TODO Auto-generated method stub
+		// TODO 编写search函数
 		
 	}
 
@@ -44,15 +33,24 @@ public abstract class DistanceBasedSearch extends Search {
 	    queue.add(seq);
     }
 
-    protected void sortQueue() {
-		Collections.sort(this.queue, this.comparator);
-	}
-
-    protected void updateDistanceOfQueue() {
+    protected Sequence findSequenceByLastState(int lastStateId) {
 	    for (Sequence seq : queue) {
-	        updateDistance(seq);
+	        if (seq.getLastState().getStateId() == lastStateId) {
+	            return seq;
+            }
         }
+        return null;
     }
 
-    protected abstract void updateDistance(Sequence seq);
+    public void stateAdvance(int lastStateId, List<Node> nodes) {
+	    Sequence seq = findSequenceByLastState(lastStateId);
+	    queue.remove(seq);
+
+    }
+
+    protected void sortQueue() {
+		Collections.sort(this.queue, getComparator());
+	}
+
+    protected abstract Comparator<Sequence> getComparator();
 }

@@ -10,4 +10,6 @@ public abstract class Node {
 	public abstract boolean isIdentical(Node node);
 	
 	public abstract boolean isSame(Node node);
+
+	public abstract String toString();
 }

@@ -18,4 +18,8 @@ public class SearchState {
 	public RestorableVMState getState() {
 		return this.state;
 	}
+
+	public String toString() {
+	    return "SearchState[" + stateId + "]";
+    }
 }
