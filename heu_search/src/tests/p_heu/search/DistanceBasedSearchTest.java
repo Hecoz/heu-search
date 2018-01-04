@@ -19,11 +19,9 @@ import java.util.Random;
 public class DistanceBasedSearchTest {
     private DistanceBasedSearch search;
     private Sequence seq;
-    private Random random;
 
     @Before
     public void init() throws Exception {
-        random = new Random();
         String[] str = new String[]{
                 "+classpath=../build/examples",
                 "+search.class=p_heu.search.BFSearch",

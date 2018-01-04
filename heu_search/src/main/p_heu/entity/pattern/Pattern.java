@@ -1,7 +1,12 @@
 package p_heu.entity.pattern;
 
+import p_heu.entity.Node;
 import p_heu.entity.PatternType;
+import p_heu.entity.PatternTypeNode;
 import p_heu.entity.ReadWriteNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Pattern {
 	private PatternType patternType;
@@ -53,5 +58,48 @@ public class Pattern {
 	
 	public boolean isSamePatternType(Pattern pattern) {
 		return this.patternType.equals(pattern.getPatternType());
+	}
+
+	public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("Pattern {\n");
+        stringBuilder.append("\t" + this.patternType.toString() + "\n");
+        stringBuilder.append("\tmatched: " + this.isMatched() + "\n");
+        if (this.isMatched()) {
+            for (Node node : this.nodes) {
+                stringBuilder.append("\t" + node.toString() + "\n");
+            }
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
+    }
+
+	public static Pattern[] getFalconPatterns() {
+		List<Pattern> patterns = new ArrayList<>();
+
+		//P1 R1(x), W2(x)
+		patterns.add(new Pattern(new PatternType("R1(x), W2(x)")));
+
+		//P2 W1(x), R2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(x)")));
+
+        //P3 W1(x), W2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x)")));
+
+        //P4 R1(x), W2(x), R1(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x), R1(x)")));
+
+        //P5 W1(x), W2(x), R1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x), R1(x)")));
+
+        //P6 W1(x), R2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(x), W1(x)")));
+
+        //P7 R1(x), W2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x), W1(x)")));
+
+        //P8 W1(x), W2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x), W1(x)")));
+
+        return patterns.toArray(new Pattern[patterns.size()]);
 	}
 }

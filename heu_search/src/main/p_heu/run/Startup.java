@@ -6,8 +6,8 @@ import gov.nasa.jpf.JPF;
 public class Startup {
 	public static void main(String[] args) {
 		String[] str = new String[]{
-				"+classpath=heu_search/build/examples",
-				"+search.class=p_heu.search.BFSearch",
+				"+classpath=out/production/heu_search",
+//				"+search.class=p_heu.search.BFSearch",
 				"CheckField"};
 		Config config = new Config(str);
 		JPF jpf = new JPF(config);
