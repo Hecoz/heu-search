@@ -6,11 +6,13 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class PatternTest {
-    private Pattern[] patterns;
+    private Pattern[] falconPatterns;
+    private Pattern[] unicornPatterns;
 
     @Before
     public void init() throws Exception {
-        patterns = Pattern.getFalconPatterns();
+        falconPatterns = Pattern.getFalconPatterns();
+        unicornPatterns = Pattern.getUnicornPatterns();
     }
 
     @Test
@@ -39,7 +41,14 @@ public class PatternTest {
 
     @Test
     public void getFalconPatterns() throws Exception {
-        for (Pattern p : patterns) {
+        for (Pattern p : falconPatterns) {
+            System.out.println(p);
+        }
+    }
+
+    @Test
+    public void getUnicornPatterns() throws Exception {
+        for (Pattern p : unicornPatterns) {
             System.out.println(p);
         }
     }

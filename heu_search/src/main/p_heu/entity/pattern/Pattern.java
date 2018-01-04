@@ -102,4 +102,61 @@ public class Pattern {
 
         return patterns.toArray(new Pattern[patterns.size()]);
 	}
+
+	public static Pattern[] getUnicornPatterns() {
+        List<Pattern> patterns = new ArrayList<>();
+
+        //P1 R1(x), W2(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x)")));
+
+        //P2 W1(x), R2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(x)")));
+
+        //P3 W1(x), W2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x)")));
+
+        //P4 R1(x), W2(x), R1(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x), R1(x)")));
+
+        //P5 W1(x), W2(x), R1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x), R1(x)")));
+
+        //P6 W1(x), R2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(x), W1(x)")));
+
+        //P7 R1(x), W2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x), W1(x)")));
+
+        //P8 W1(x), W2(x), W1(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x), W1(x)")));
+
+        //P9 W1(x), W2(x), W2(y), W1(y)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(x), W2(y), W1(y)")));
+
+        //P10 W1(x), W2(y), W2(x), W1(y)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(y), W2(x), W1(y)")));
+
+        //P11 W1(x), W2(y), W1(y), W2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), W2(y), W1(y), W2(x)")));
+
+        //P12 W1(x), R2(x), R2(y), W1(y)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(x), R2(y), W1(y)")));
+
+        //P13 W1(x), R2(y), R2(x), W1(y)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(y), R2(x), W1(y)")));
+
+        //P14 R1(x), W2(x), W2(y), R1(y)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(x), W2(y), R1(y)")));
+
+        //P15 R1(x), W2(y), W2(x), R1(y)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(y), W2(x), R1(y)")));
+
+        //P16 R1(x), W2(y), R1(y), W2(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(y), R1(y), W2(x)")));
+
+        //P17 R1(x), W2(y), W1(y), R2(x)
+        patterns.add(new Pattern(new PatternType("R1(x), W2(y), W1(y), R2(x)")));
+
+        return patterns.toArray(new Pattern[patterns.size()]);
+    }
 }

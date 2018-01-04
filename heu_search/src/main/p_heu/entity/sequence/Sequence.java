@@ -125,7 +125,7 @@ public class Sequence {
 	    this.consist = false;
     }
 	
-	public List<Pattern> matchPattern() {
+	public List<Pattern> matchPattern(Pattern[] patterns) {
 		//TODO 序列或子序列的pattern匹配算法
 		return null;
 	}
