@@ -8,7 +8,7 @@ public class Startup {
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 //				"+search.class=p_heu.search.BFSearch",
-				"CheckField"};
+				"pack_test.CheckField"};
 		Config config = new Config(str);
 		JPF jpf = new JPF(config);
 		jpf.run();

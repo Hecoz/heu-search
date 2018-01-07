@@ -9,6 +9,7 @@ import p_heu.entity.Node;
 import p_heu.entity.ReadWriteNode;
 import p_heu.entity.ScheduleNode;
 import p_heu.entity.SearchState;
+import p_heu.entity.filter.Filter;
 import p_heu.entity.sequence.Sequence;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class SequenceProduceListener extends ListenerAdapter {
     private int nodeId;
     private SearchState currentState;
     private boolean execResult;
+    private Filter positionFilter;
 
     public SequenceProduceListener() {
         this.sequence = new Sequence();
@@ -27,6 +29,11 @@ public class SequenceProduceListener extends ListenerAdapter {
         currentStateNodes = null;
         currentState = null;
         execResult = true;
+        positionFilter = null;
+    }
+
+    public void setPositionFilter(Filter filter) {
+        positionFilter = filter;
     }
 
     public Sequence getSequence() {
@@ -40,6 +47,12 @@ public class SequenceProduceListener extends ListenerAdapter {
     public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
         if (executedInstruction instanceof FieldInstruction) {
             FieldInstruction fins = (FieldInstruction)executedInstruction;
+
+            //position filter
+            if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
+                return;
+            }
+
             FieldInfo fi = fins.getFieldInfo();
             ElementInfo ei = fins.getElementInfo(currentThread);
 
