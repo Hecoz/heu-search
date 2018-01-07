@@ -2,15 +2,14 @@ package p_heu.entity.pattern;
 
 import p_heu.entity.Node;
 import p_heu.entity.PatternType;
-import p_heu.entity.PatternTypeNode;
 import p_heu.entity.ReadWriteNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Pattern {
-	private PatternType patternType;
-	private ReadWriteNode[] nodes;
+	protected PatternType patternType;
+    protected ReadWriteNode[] nodes;
 	
 	public Pattern(PatternType patternType) {
 		this.patternType = patternType;
@@ -73,6 +72,32 @@ public class Pattern {
         return stringBuilder.toString();
     }
 
+    public static MemoryAccessPair[] getMemoryAccessPairs() {
+        List<MemoryAccessPair> pairs = new ArrayList<>();
+
+        //P1 R1(x), W2(x)
+        pairs.add(new MemoryAccessPair(new PatternType("R1(x), W2(x)")));
+
+        //P2 W1(x), R2(x)
+        pairs.add(new MemoryAccessPair(new PatternType("W1(x), R2(x)")));
+
+        //P3 W1(x), W2(x)
+        pairs.add(new MemoryAccessPair(new PatternType("W1(x), W2(x)")));
+
+        return pairs.toArray(new MemoryAccessPair[pairs.size()]);
+    }
+
+    public static Pattern tryConstructFalconPattern(MemoryAccessPair pair1, MemoryAccessPair pair2) {
+        //TODO
+	    return null;
+    }
+
+    public static Pattern tryConstrucUnicornPattern(MemoryAccessPair pair1, MemoryAccessPair pair2) {
+	    //TODO
+	    return null;
+    }
+
+    /* logic needs to update: use memory access pairs to find patterns
 	public static Pattern[] getFalconPatterns() {
 		List<Pattern> patterns = new ArrayList<>();
 
@@ -102,7 +127,9 @@ public class Pattern {
 
         return patterns.toArray(new Pattern[patterns.size()]);
 	}
+	*/
 
+    /*
 	public static Pattern[] getUnicornPatterns() {
         List<Pattern> patterns = new ArrayList<>();
 
@@ -159,4 +186,5 @@ public class Pattern {
 
         return patterns.toArray(new Pattern[patterns.size()]);
     }
+    */
 }

@@ -1,12 +1,11 @@
 package p_heu.entity.sequence;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import gov.nasa.jpf.vm.RestorableVMState;
 import p_heu.entity.Node;
 import p_heu.entity.SearchState;
+import p_heu.entity.pattern.MemoryAccessPair;
 import p_heu.entity.pattern.Pattern;
 
 public class Sequence {
@@ -125,10 +124,37 @@ public class Sequence {
 	    this.consist = false;
     }
 	
-	public List<Pattern> matchPattern(Pattern[] patterns) {
-		//TODO 序列或子序列的pattern匹配算法
-		return null;
+	public Set<Pattern> matchPatterns(String patternSet) {
+	    Set<Pattern> result = new HashSet<>();
+        MemoryAccessPair[] pairs = Pattern.getMemoryAccessPairs();
+        List<MemoryAccessPair> matchedPairs = matchPairs(pairs);
+        result.addAll(matchedPairs);
+        for (int i = 0; i < matchedPairs.size(); ++i) {
+            for (int j = i + 1; j < matchedPairs.size(); ++j) {
+                MemoryAccessPair pair1 = matchedPairs.get(i);
+                MemoryAccessPair pair2 = matchedPairs.get(j);
+                Pattern pattern = null;
+                if (patternSet.equals("falcon")) {
+                    pattern = Pattern.tryConstructFalconPattern(pair1, pair2);
+                }
+                else if (patternSet.equals("unicorn")) {
+                    pattern = Pattern.tryConstrucUnicornPattern(pair1, pair2);
+                }
+                else {
+                    throw new RuntimeException("unknown pattern set");
+                }
+                if (pattern != null) {
+                    result.add(pattern);
+                }
+            }
+        }
+		return result;
 	}
+
+	public List<MemoryAccessPair> matchPairs(MemoryAccessPair[] pairs) {
+	    //TODO
+        return null;
+    }
 
 
 	public String toString() {
