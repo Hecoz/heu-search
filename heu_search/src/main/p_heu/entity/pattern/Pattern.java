@@ -10,6 +10,10 @@ import java.util.List;
 public class Pattern {
 	protected PatternType patternType;
     protected ReadWriteNode[] nodes;
+
+    private static PatternType rw = new PatternType("R1(x), W2(x)");
+    private static PatternType wr = new PatternType("W1(x), R2(x)");
+    private static PatternType ww = new PatternType("W1(x), W2(x)");
 	
 	public Pattern(PatternType patternType) {
 		this.patternType = patternType;
@@ -59,6 +63,11 @@ public class Pattern {
 		return this.patternType.equals(pattern.getPatternType());
 	}
 
+	public boolean isSameInstance(Pattern pattern) {
+	    return this.nodes[0].getElement().equals(pattern.getNodes()[0].getElement())
+                && this.nodes[0].getField().equals(pattern.getNodes()[0].getField());
+    }
+
 	public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Pattern {\n");
         stringBuilder.append("\t" + this.patternType.toString() + "\n");
@@ -88,13 +97,246 @@ public class Pattern {
     }
 
     public static Pattern tryConstructFalconPattern(MemoryAccessPair pair1, MemoryAccessPair pair2) {
-        //TODO
-	    return null;
+	    if (pair1.getLast().getId() == pair2.getFirst().getId()) {
+	        return new Pattern(new PatternType("R1(x), W2(x), R1(x)"), new ReadWriteNode[]{
+                    pair1.getFirst(),
+                    pair1.getLast(),
+                    pair2.getLast()
+            });
+        }
+        else if (pair2.getLast().getId() == pair1.getFirst().getId()) {
+            return new Pattern(new PatternType("R1(x), W2(x), R1(x)"), new ReadWriteNode[]{
+                    pair2.getFirst(),
+                    pair2.getLast(),
+                    pair1.getLast()
+            });
+        }
+        else {
+            return null;
+        }
     }
 
     public static Pattern tryConstrucUnicornPattern(MemoryAccessPair pair1, MemoryAccessPair pair2) {
-	    //TODO
-	    return null;
+	    Pattern pattern = tryConstructFalconPattern(pair1, pair2);
+	    if (pattern != null) {
+	        return pattern;
+        }
+	    //检查pair1, pair2是否属于同一个实例却是同样两个线程的交互操作,切线程顺序相反
+	    if (!pair1.isSameInstance(pair2)
+                && pair1.getFirst().getThread().equals(pair2.getLast().getThread())
+                && pair1.getLast().getThread().equals(pair2.getFirst().getThread())) {
+
+            //P9 W1(x), W2(x), W2(y), W1(y)
+            if (pair1.getPatternType().isSame(ww) && pair2.getPatternType().isSame(ww)) {
+                if (pair1.getLast().getId() < pair2.getFirst().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(x), W2(y), W1(y)"), new ReadWriteNode[] {
+                            pair1.getFirst(),
+                            pair1.getLast(),
+                            pair2.getFirst(),
+                            pair2.getLast()
+                    });
+                }
+                else if (pair2.getLast().getId() < pair1.getFirst().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(x), W2(y), W1(y)"), new ReadWriteNode[] {
+                            pair2.getFirst(),
+                            pair2.getLast(),
+                            pair1.getFirst(),
+                            pair1.getLast()
+                    });
+                }
+            }
+
+            //P10 W1(x), W2(y), W2(x), W1(y)
+            if (pair1.getPatternType().isSame(ww) && pair2.getPatternType().isSame(ww)) {
+                if (pair1.getFirst().getId() < pair2.getFirst().getId()
+                        && pair2.getFirst().getId() < pair1.getLast().getId()
+                        && pair1.getLast().getId() < pair2.getLast().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(y), W2(x), W1(y)"), new ReadWriteNode[] {
+                            pair1.getFirst(),
+                            pair2.getFirst(),
+                            pair1.getLast(),
+                            pair2.getLast()
+                    });
+                }
+                else if (pair2.getFirst().getId() < pair1.getFirst().getId()
+                        && pair1.getFirst().getId() < pair2.getLast().getId()
+                        && pair2.getLast().getId() < pair1.getLast().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(y), W2(x), W1(y)"), new ReadWriteNode[] {
+                            pair2.getFirst(),
+                            pair1.getFirst(),
+                            pair2.getLast(),
+                            pair1.getLast()
+                    });
+                }
+            }
+
+            //P11 W1(x), W2(y), W1(y), W2(x)
+            if (pair1.getPatternType().isSame(ww) && pair2.getPatternType().isSame(ww)) {
+                if (pair1.getFirst().getId() < pair2.getFirst().getId()
+                        && pair2.getLast().getId() < pair1.getLast().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(y), W1(y), W2(x)"), new ReadWriteNode[] {
+                            pair1.getFirst(),
+                            pair2.getFirst(),
+                            pair2.getLast(),
+                            pair1.getLast()
+                    });
+                }
+                else if (pair2.getFirst().getId() < pair1.getFirst().getId()
+                        && pair1.getLast().getId() < pair2.getLast().getId()) {
+                    return new Pattern(new PatternType("W1(x), W2(y), W1(y), W2(x)"), new ReadWriteNode[] {
+                            pair2.getFirst(),
+                            pair1.getFirst(),
+                            pair1.getLast(),
+                            pair2.getLast()
+                    });
+                }
+            }
+
+            //P12 W1(x), R2(x), R2(y), W1(y) pair1 < pair2
+            if (pair1.getPatternType().isSame(wr) && pair2.getPatternType().isSame(rw)
+                    && pair1.getLast().getId() < pair2.getFirst().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(x), R2(y), W1(y)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair1.getLast(),
+                        pair2.getFirst(),
+                        pair2.getLast()
+                });
+            }
+
+            //P12 W1(x), R2(x), R2(y), W1(y) pair2 < pair1
+            if (pair2.getPatternType().isSame(wr) && pair1.getPatternType().isSame(rw)
+                    && pair2.getLast().getId() < pair1.getFirst().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(x), R2(y), W1(y)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair2.getLast(),
+                        pair1.getFirst(),
+                        pair1.getLast()
+                });
+            }
+
+            //P13 W1(x), R2(y), R2(x), W1(y) pair1 < pair2
+            if (pair1.getPatternType().isSame(wr) && pair2.getPatternType().isSame(rw)
+                    && pair1.getFirst().getId() < pair2.getFirst().getId()
+                    && pair2.getFirst().getId() < pair1.getLast().getId()
+                    && pair1.getLast().getId() < pair2.getLast().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(y), R2(x), W1(y)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair2.getFirst(),
+                        pair1.getLast(),
+                        pair2.getLast()
+                });
+            }
+
+            //P13 W1(x), R2(y), R2(x), W1(y) pair2 < pair1
+            if (pair2.getPatternType().isSame(wr) && pair1.getPatternType().isSame(rw)
+                    && pair2.getFirst().getId() < pair1.getFirst().getId()
+                    && pair1.getFirst().getId() < pair2.getLast().getId()
+                    && pair2.getLast().getId() < pair1.getLast().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(y), R2(x), W1(y)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair1.getFirst(),
+                        pair2.getLast(),
+                        pair1.getLast()
+                });
+            }
+
+            //P14 R1(x), W2(x), W2(y), R1(y) pair1 < pair2
+            if (pair1.getPatternType().isSame(rw) && pair2.getPatternType().isSame(wr)
+                    && pair1.getLast().getId() < pair2.getFirst().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(x), W2(y), R1(y)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair1.getLast(),
+                        pair2.getFirst(),
+                        pair2.getLast()
+                });
+            }
+
+            //P14 R1(x), W2(x), W2(y), R1(y) pair2 < pair1
+            if (pair2.getPatternType().isSame(rw) && pair1.getPatternType().isSame(wr)
+                    && pair2.getLast().getId() < pair1.getFirst().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(x), W2(y), R1(y)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair2.getLast(),
+                        pair1.getFirst(),
+                        pair1.getLast()
+                });
+            }
+
+            //P15 R1(x), W2(y), W2(x), R1(y) pair1 < pair2
+            if (pair1.getPatternType().isSame(rw) && pair2.getPatternType().isSame(wr)
+                    && pair1.getFirst().getId() < pair2.getFirst().getId()
+                    && pair2.getFirst().getId() < pair1.getLast().getId()
+                    && pair1.getLast().getId() < pair2.getLast().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(y), W2(x), R1(y)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair2.getFirst(),
+                        pair1.getLast(),
+                        pair2.getLast()
+                });
+            }
+
+            //P15 R1(x), W2(y), W2(x), R1(y) pair2 < pair1
+            if (pair2.getPatternType().isSame(rw) && pair1.getPatternType().isSame(wr)
+                    && pair2.getFirst().getId() < pair1.getFirst().getId()
+                    && pair1.getFirst().getId() < pair2.getLast().getId()
+                    && pair2.getLast().getId() < pair1.getLast().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(y), W2(x), R1(y)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair1.getFirst(),
+                        pair2.getLast(),
+                        pair1.getLast()
+                });
+            }
+
+            //P16 R1(x), W2(y), R1(y), W2(x) pair1 < pair2
+            if (pair1.getPatternType().isSame(rw) && pair2.getPatternType().isSame(wr)
+                    && pair1.getFirst().getId() < pair2.getFirst().getId()
+                    && pair2.getLast().getId() < pair1.getLast().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(y), R1(y), W2(x)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair2.getFirst(),
+                        pair2.getLast(),
+                        pair1.getLast()
+                });
+            }
+
+            //P16 R1(x), W2(y), R1(y), W2(x) pair2 < pair1
+            if (pair2.getPatternType().isSame(rw) && pair1.getPatternType().isSame(wr)
+                    && pair2.getFirst().getId() < pair1.getFirst().getId()
+                    && pair1.getLast().getId() < pair2.getLast().getId()) {
+                return new Pattern(new PatternType("R1(x), W2(y), R1(y), W2(x)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair1.getFirst(),
+                        pair1.getLast(),
+                        pair2.getLast()
+                });
+            }
+
+            //P17 W1(x), R2(y), W1(y), R2(x) pair1 < pair2
+            if (pair1.getPatternType().isSame(wr) && pair2.getPatternType().isSame(rw)
+                    && pair1.getFirst().getId() < pair2.getFirst().getId()
+                    && pair2.getLast().getId() < pair1.getLast().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(y), W1(y), R2(x)"), new ReadWriteNode[] {
+                        pair1.getFirst(),
+                        pair2.getFirst(),
+                        pair2.getLast(),
+                        pair1.getLast()
+                });
+            }
+
+            //P17 W1(x), R2(y), W1(y), R2(x) pair2 < pair1
+            if (pair2.getPatternType().isSame(wr) && pair1.getPatternType().isSame(rw)
+                    && pair2.getFirst().getId() < pair1.getFirst().getId()
+                    && pair1.getLast().getId() < pair2.getLast().getId()) {
+                return new Pattern(new PatternType("W1(x), R2(y), W1(y), R2(x)"), new ReadWriteNode[] {
+                        pair2.getFirst(),
+                        pair1.getFirst(),
+                        pair1.getLast(),
+                        pair2.getLast()
+                });
+            }
+        }
+        return null;
     }
 
     /* logic needs to update: use memory access pairs to find patterns
@@ -181,8 +423,8 @@ public class Pattern {
         //P16 R1(x), W2(y), R1(y), W2(x)
         patterns.add(new Pattern(new PatternType("R1(x), W2(y), R1(y), W2(x)")));
 
-        //P17 R1(x), W2(y), W1(y), R2(x)
-        patterns.add(new Pattern(new PatternType("R1(x), W2(y), W1(y), R2(x)")));
+        //P17 W1(x), R2(y), W1(y), R2(x)
+        patterns.add(new Pattern(new PatternType("W1(x), R2(y), W1(y), R2(x)")));
 
         return patterns.toArray(new Pattern[patterns.size()]);
     }

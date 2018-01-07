@@ -17,4 +17,22 @@ public class MemoryAccessPair extends Pattern {
             throw new RuntimeException("not a memory access pair");
         }
     }
+
+    public ReadWriteNode getFirst() {
+        if (isMatched()) {
+            return this.nodes[0];
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ReadWriteNode getLast() {
+        if (isMatched()) {
+            return this.nodes[1];
+        }
+        else {
+            return null;
+        }
+    }
 }
