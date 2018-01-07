@@ -53,6 +53,10 @@ public class ReadWriteNode extends Node {
 		return false;
 	}
 
+	public boolean isSameInstance(ReadWriteNode node) {
+		return this.element.equals(node.getElement()) && this.getField().equals(node.getField());
+	}
+
 	public String toString() {
 		return "ReadWriteNode[" + id + "," + element + "," + field + "," + type + "," + thread + "," + position + "]";
 	}

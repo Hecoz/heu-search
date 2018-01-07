@@ -3,8 +3,7 @@ package p_heu.entity.sequence;
 import java.util.*;
 
 import gov.nasa.jpf.vm.RestorableVMState;
-import p_heu.entity.Node;
-import p_heu.entity.SearchState;
+import p_heu.entity.*;
 import p_heu.entity.pattern.MemoryAccessPair;
 import p_heu.entity.pattern.Pattern;
 
@@ -151,8 +150,55 @@ public class Sequence {
 		return result;
 	}
 
-	public List<MemoryAccessPair> matchPairs(MemoryAccessPair[] pairs) {
-	    //TODO
+	private List<MemoryAccessPair> matchPairs(MemoryAccessPair[] pairs) {
+	    List<MemoryAccessPair> result = new ArrayList<>();
+	    for (int i = 0; i < this.nodes.size(); ++i) {
+	        if (this.nodes.get(i) instanceof ReadWriteNode) {
+	            ReadWriteNode node = (ReadWriteNode)this.nodes.get(i);
+	            result.addAll(matchNext(node, i + 1, pairs));
+            }
+        }
+        return result;
+    }
+
+    private Set<MemoryAccessPair> matchNext(ReadWriteNode node, int begin, MemoryAccessPair[] pairs) {
+	    Set<MemoryAccessPair> matchedPairs = new HashSet<>();
+	    for (int i = begin; i < this.nodes.size(); ++i) {
+	        if (!(this.nodes.get(i) instanceof ReadWriteNode)) {
+	            continue;
+            }
+            ReadWriteNode nextNode = (ReadWriteNode)this.nodes.get(i);
+	        if (!node.isSameInstance(nextNode)) {
+	            continue;
+            }
+	        MemoryAccessPair matchedPair = isMatch(node, nextNode, pairs);
+	        if (matchedPair != null) {
+	            matchedPairs.add(matchedPair);
+            }
+            if (nextNode.getType().equals("WRITE")) {
+	            break;
+            }
+        }
+        return matchedPairs;
+    }
+
+    private MemoryAccessPair isMatch(ReadWriteNode node1, ReadWriteNode node2, MemoryAccessPair[] pairs) {
+	    //是否是同一个变量已经在上一个函数检查，这里不需要
+
+	    for (MemoryAccessPair pair : pairs) {
+	        //检查线程是否与pair要求一致
+            PatternTypeNode[] ptNode = pair.getPatternType().getNodes();
+	        if (node1.getThread().equals(node2.getThread()) != ptNode[0].getThread().equals(ptNode[1].getThread())) {
+	            continue;
+            }
+
+            //检查读写种类是否一致
+            if (node1.getType().equals(ptNode[0].getType()) && node2.getType().equals(ptNode[1].getType())) {
+	            return new MemoryAccessPair(pair.getPatternType(), new ReadWriteNode[] {
+	                    node1, node2
+                });
+            }
+        }
         return null;
     }
 

@@ -64,8 +64,7 @@ public class Pattern {
 	}
 
 	public boolean isSameInstance(Pattern pattern) {
-	    return this.nodes[0].getElement().equals(pattern.getNodes()[0].getElement())
-                && this.nodes[0].getField().equals(pattern.getNodes()[0].getField());
+	    return this.nodes[0].isSameInstance(pattern.getNodes()[0]);
     }
 
 	public String toString() {
