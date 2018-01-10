@@ -96,15 +96,71 @@ public class Pattern {
     }
 
     public static Pattern tryConstructFalconPattern(MemoryAccessPair pair1, MemoryAccessPair pair2) {
-	    if (pair1.getLast().getId() == pair2.getFirst().getId()) {
-	        return new Pattern(new PatternType("R1(x), W2(x), R1(x)"), new ReadWriteNode[]{
+	    if (pair1.getLast().getId() == pair2.getFirst().getId()
+                && pair1.getFirst().getThread().equals(pair2.getLast().getThread())) {
+	        String ptStr;
+	        if (pair1.getFirst().getType().equals("READ")) {
+	            if (pair2.getLast().getType().equals("READ")) {
+                    //P4 R1(x), W2(x), R1(x)
+	                ptStr = "R1(x), W2(x), R1(x)";
+                }
+                else {
+                    //P8 W1(x), W2(x), W1(x)
+	                ptStr = "W1(x), W2(x), W1(x)";
+                }
+            }
+            else {
+	            if (pair1.getLast().getType().equals("READ")) {
+                    //P6 W1(x), R2(x), W1(x)
+	                ptStr = "W1(x), R2(x), W1(x)";
+                }
+                else {
+	                if (pair2.getLast().getType().equals("READ")) {
+                        //P5 W1(x), W2(x), R1(x)
+	                    ptStr = "W1(x), W2(x), R1(x)";
+                    }
+                    else {
+                        //P7 R1(x), W2(x), W1(x)
+	                    ptStr = "R1(x), W2(x), W1(x)";
+                    }
+                }
+            }
+	        return new Pattern(new PatternType(ptStr), new ReadWriteNode[]{
                     pair1.getFirst(),
                     pair1.getLast(),
                     pair2.getLast()
             });
         }
-        else if (pair2.getLast().getId() == pair1.getFirst().getId()) {
-            return new Pattern(new PatternType("R1(x), W2(x), R1(x)"), new ReadWriteNode[]{
+        else if (pair2.getLast().getId() == pair1.getFirst().getId()
+                && pair2.getFirst().getThread().equals(pair1.getLast().getThread())) {
+            String ptStr;
+            if (pair2.getFirst().getType().equals("READ")) {
+                if (pair1.getLast().getType().equals("READ")) {
+                    //P4 R1(x), W2(x), R1(x)
+                    ptStr = "R1(x), W2(x), R1(x)";
+                }
+                else {
+                    //P8 W1(x), W2(x), W1(x)
+                    ptStr = "W1(x), W2(x), W1(x)";
+                }
+            }
+            else {
+                if (pair2.getLast().getType().equals("READ")) {
+                    //P6 W1(x), R2(x), W1(x)
+                    ptStr = "W1(x), R2(x), W1(x)";
+                }
+                else {
+                    if (pair1.getLast().getType().equals("READ")) {
+                        //P5 W1(x), W2(x), R1(x)
+                        ptStr = "W1(x), W2(x), R1(x)";
+                    }
+                    else {
+                        //P7 R1(x), W2(x), W1(x)
+                        ptStr = "R1(x), W2(x), W1(x)";
+                    }
+                }
+            }
+            return new Pattern(new PatternType(ptStr), new ReadWriteNode[]{
                     pair2.getFirst(),
                     pair2.getLast(),
                     pair1.getLast()

@@ -24,7 +24,7 @@ public class SequenceTest {
         String[] str = new String[]{
                 "+classpath=../../out/production/heu_search",
                 "+search.class=p_heu.search.SingleExecutionSearch",
-                "pack_test.CheckField"};
+                "hashcodetest.HashCodeTest"};
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();
@@ -91,10 +91,10 @@ public class SequenceTest {
 
     @Test
     public void matchPairs() throws Exception {
-        System.out.println(sequence);
-        Set<Pattern> patterns = sequence.matchPatterns("falcon");
+//        System.out.println(sequence);
+        Set<Pattern> patterns = sequence.matchPatterns("unicorn");
         for (Pattern p : patterns) {
-            if (p.getNodes().length != 2) {
+            if (p.getNodes().length == 3) {
                 System.out.println(p);
             }
         }
