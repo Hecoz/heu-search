@@ -46,7 +46,8 @@ public abstract class DistanceBasedSearch extends Search {
 			for(int run = 0; run < currentRun; run++) {
 				try {
 					Sequence sequence = queue.getLast();
-					currentNumberOfChoice = sequence.getLastState().getCurrentNumberOfChoices();
+					//TODO needs fix
+					currentNumberOfChoice = -1;
 				} catch (Exception e) {
 					currentNumberOfChoice = -1;
 				}

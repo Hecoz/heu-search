@@ -34,23 +34,23 @@ public class DistanceBasedSearchTest {
         seq = new Sequence();
         List<Node> nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(1, "aa", "xx", "read", "t1", "12"));
-        seq = seq.advance(1, 1,null, nodes);
+        seq = seq.advance(1,null, nodes);
         nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(2, "aa", "xx", "read", "t2", "13"));
         nodes.add(new ReadWriteNode(3, "aa", "xx", "write", "t2", "13"));
-        seq = seq.advance(2, 1,null, nodes);
+        seq = seq.advance(2,null, nodes);
         search.addQueue(seq);
         seq = new Sequence();
         seq = new Sequence();
         nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(1, "aa", "xx", "read", "t1", "12"));
-        seq = seq.advance(1, 1,null, nodes);
+        seq = seq.advance(1,null, nodes);
         search.addQueue(seq);
         seq = new Sequence();
         seq = new Sequence();
         nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(1, "aa", "xx", "read", "t1", "12"));
-        seq = seq.advance(1, 1,null, nodes);
+        seq = seq.advance(1,null, nodes);
         search.addQueue(seq);
     }
 

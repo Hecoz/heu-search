@@ -21,7 +21,7 @@ public class FilterTest {
         String[] str = new String[]{
                 "+classpath=../../out/production/heu_search",
                 "+search.class=p_heu.search.SingleExecutionSearch",
-                "pack_test.CheckField"};
+                "CheckField"};
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();

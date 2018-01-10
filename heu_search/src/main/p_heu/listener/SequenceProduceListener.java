@@ -94,12 +94,13 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     private void saveLastState() {
-        sequence = sequence.advance(currentState.getStateId(),currentState.getCurrentNumberOfChoices(), currentState.getState(), currentStateNodes);
+        sequence = sequence.advance(currentState.getStateId(), currentState.getState(), currentStateNodes);
     }
 
     private void initCurrentState(VM vm) {
 
-        currentState = new SearchState(vm.getStateId(),vm.getChoiceGenerator().getTotalNumberOfChoices(),vm.getRestorableState());
+        System.out.println(vm.getStateId());
+        currentState = new SearchState(vm.getStateId(), vm.getRestorableState());
         currentStateNodes = new ArrayList<>();
     }
 
@@ -108,6 +109,6 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     public void searchFinished(Search search) {
-        sequence = sequence.advanceToEnd(currentState.getStateId(),currentState.getCurrentNumberOfChoices(),currentState.getState(), currentStateNodes, execResult);
+        sequence = sequence.advanceToEnd(currentState.getStateId(),currentState.getState(), currentStateNodes, execResult);
     }
 }

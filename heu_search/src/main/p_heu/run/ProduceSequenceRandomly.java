@@ -10,7 +10,7 @@ public class ProduceSequenceRandomly {
         String[] str = new String[]{
                 "+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.SingleExecutionSearch",
-                "CheckField"};
+                "hashcodetest.HashCodeTest"};
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();

@@ -85,16 +85,16 @@ public class Sequence {
 //        }
 //    }
 
-    public Sequence advance(int stateId,int currentNumberOfChoices, RestorableVMState state, List<Node> nodes) {
+    public Sequence advance(int stateId, RestorableVMState state, List<Node> nodes) {
 	    Sequence seq = this.copy();
-	    seq.states.add(new SearchState(stateId,currentNumberOfChoices,state));
+	    seq.states.add(new SearchState(stateId, state));
 	    seq.nodes.addAll(nodes);
 	    seq.consist = false;
 	    return seq;
     }
 
-    public Sequence advanceToEnd(int stateId,int currentNumberOfChoices,RestorableVMState state, List<Node> nodes, boolean result) {
-	    Sequence seq = advance(stateId,currentNumberOfChoices,state, nodes);
+    public Sequence advanceToEnd(int stateId, RestorableVMState state, List<Node> nodes, boolean result) {
+	    Sequence seq = advance(stateId,state, nodes);
 	    seq.finished = true;
 	    seq.result = result;
 	    return seq;

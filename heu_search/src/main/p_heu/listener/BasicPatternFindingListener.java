@@ -42,9 +42,9 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     private void initCurrentState(VM vm) {
         ChoiceGenerator<?> currentCG = vm.getChoiceGenerator();
         if(currentCG != null){
-            currentState = new SearchState(vm.getStateId(),currentCG.getTotalNumberOfChoices(),vm.getRestorableState());
+            currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
         }else{
-            currentState = new SearchState(vm.getStateId(),0,vm.getRestorableState());
+            currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
         }
         currentStateNodes = new ArrayList<>();
         search = vm.getSearch();
@@ -52,7 +52,7 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     }
 
     private void saveLastState() {
-        sequence = sequence.advance(currentState.getStateId(),currentState.getCurrentNumberOfChoices(),currentState.getState(), currentStateNodes);
+        sequence = sequence.advance(currentState.getStateId(),currentState.getState(), currentStateNodes);
     }
 
     public Sequence getSequence() {
@@ -138,6 +138,6 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     @Override
     public void searchFinished(Search search) {
         super.searchFinished(search);
-        sequence = sequence.advanceToEnd(currentState.getStateId(),currentState.getCurrentNumberOfChoices(), currentState.getState(), currentStateNodes, execResult);
+        sequence = sequence.advanceToEnd(currentState.getStateId(), currentState.getState(), currentStateNodes, execResult);
     }
 }
