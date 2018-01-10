@@ -47,8 +47,9 @@ public class SequenceProduceListener extends ListenerAdapter {
     public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
         if (executedInstruction instanceof FieldInstruction) {
             FieldInstruction fins = (FieldInstruction)executedInstruction;
-
             //position filter
+            //System.out.println(fins.getFileLocation());
+
             if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
                 return;
             }
@@ -93,11 +94,12 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     private void saveLastState() {
-        sequence = sequence.advance(currentState.getStateId(), currentState.getState(), currentStateNodes);
+        sequence = sequence.advance(currentState.getStateId(),currentState.getCurrentNumberOfChoices(), currentState.getState(), currentStateNodes);
     }
 
     private void initCurrentState(VM vm) {
-        currentState = new SearchState(vm.getStateId(), vm.getRestorableState());
+
+        currentState = new SearchState(vm.getStateId(),vm.getChoiceGenerator().getTotalNumberOfChoices(),vm.getRestorableState());
         currentStateNodes = new ArrayList<>();
     }
 
@@ -106,6 +108,6 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     public void searchFinished(Search search) {
-        sequence = sequence.advanceToEnd(currentState.getStateId(), currentState.getState(), currentStateNodes, execResult);
+        sequence = sequence.advanceToEnd(currentState.getStateId(),currentState.getCurrentNumberOfChoices(),currentState.getState(), currentStateNodes, execResult);
     }
 }

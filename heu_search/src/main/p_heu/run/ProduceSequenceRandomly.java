@@ -14,7 +14,9 @@ public class ProduceSequenceRandomly {
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();
-        listener.setPositionFilter(Filter.createFilePathFilter());
+        Filter filter = Filter.createFilePathFilter();
+        listener.setPositionFilter(filter);
+
         jpf.addListener(listener);
         jpf.run();
         System.out.println(listener.getSequence());

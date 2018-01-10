@@ -57,7 +57,7 @@ public class SequenceTest {
         System.out.println(sequence.isFinished());
         List<Node> nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(1, "aa", "xx", "read", "t1", "12"));
-        sequence = sequence.advanceToEnd(4, null, nodes, false);
+        sequence = sequence.advanceToEnd(4, 2,null, nodes, false);
         System.out.println(sequence.isFinished());
     }
 
@@ -65,7 +65,7 @@ public class SequenceTest {
     public void getResult() throws Exception {
         List<Node> nodes = new ArrayList<>();
         nodes.add(new ReadWriteNode(1, "aa", "xx", "read", "t1", "12"));
-        sequence = sequence.advanceToEnd(4, null, nodes, true);
+        sequence = sequence.advanceToEnd(4,2, null, nodes, true);
         System.out.println(sequence.getResult());
     }
 

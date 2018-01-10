@@ -25,10 +25,12 @@ public class Filter {
     public static Filter createFilePathFilter() {
         //在main文件夹下和test文件夹下调用，user.dir的属性，因此需要检查并修改path的值使之始终保持一致
         String path = System.getProperty("user.dir");
+
         if (!path.endsWith("src")) {
-            path += "\\heu_search\\src";
+            path += "/heu_search/src";
         }
-        File exampleDir = new File(path + "\\examples");
+
+        File exampleDir = new File(path + "/examples");
         StringBuilder regexBuilder = new StringBuilder("^(");
 //        String[] files = exampleDir.list();
 //        for (String file : files) {
@@ -39,11 +41,11 @@ public class Filter {
         boolean start = true;
         for (String str : set) {
 //            System.out.println(str);
-            java.util.regex.Pattern pat = java.util.regex.Pattern.compile(
-                    "^" + exampleDir.getPath().replaceAll("\\\\", "\\\\\\\\") + "\\\\(.*)$"
-            );
+            java.util.regex.Pattern pat = java.util.regex.Pattern.compile("^" + exampleDir.getPath() + "/(.*)$");
+
 //            System.out.println(pat.toString());
             Matcher matcher = pat.matcher(str);
+//            System.out.println(matcher);
             if (matcher.find()) {
 //                System.out.println("find");
                 if (start) {
@@ -52,8 +54,9 @@ public class Filter {
                 else {
                     regexBuilder.append("|");
                 }
-                regexBuilder.append(matcher.group(1)
-                        .replaceAll("\\\\", "/").replaceAll("\\.", "\\\\."));
+                if(!matcher.group(1).equals(".DS_Store")){
+                    regexBuilder.append(matcher.group(1));
+                }
             }
         }
         regexBuilder.append("):\\d+$");
