@@ -70,7 +70,7 @@ public class Pattern {
 	}
 	
 	public boolean isSamePatternType(Pattern pattern) {
-		return this.patternType.equals(pattern.getPatternType());
+		return this.patternType.isSame(pattern.getPatternType());
 	}
 
 	public boolean isSameInstance(Pattern pattern) {

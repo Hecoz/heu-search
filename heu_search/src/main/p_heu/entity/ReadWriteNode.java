@@ -46,7 +46,12 @@ public class ReadWriteNode extends Node {
 	public boolean isSame(Node node) {
 		if (node instanceof ReadWriteNode) {
 			ReadWriteNode rwNode = (ReadWriteNode)node;
-			return this.element.equals(rwNode.getElement()) && this.field.equals(rwNode.getField())
+			String element1 = this.element.lastIndexOf("@") == -1 ?
+                    this.element : this.element.substring(0, this.element.lastIndexOf("@"));
+			String element2 = rwNode.getElement().lastIndexOf("@") == -1 ?
+                    rwNode.getElement() : rwNode.getElement().substring(0, rwNode.getElement().lastIndexOf("@"));
+
+			return element1.equals(element2) && this.field.equals(rwNode.getField())
 					&& this.type.equals(rwNode.getType()) && this.thread.equals(rwNode.getThread())
 					&& this.position.equals(rwNode.getPosition());
 		}

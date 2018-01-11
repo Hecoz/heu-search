@@ -143,6 +143,7 @@ public class Sequence {
                     differencePatterns.add(p);
                 }
             }
+            System.out.println("diff size: " + differencePatterns.size());
             if (smallestSize == -1 || differencePatterns.size() < smallestSize) {
                 smallestSize = differencePatterns.size();
             }

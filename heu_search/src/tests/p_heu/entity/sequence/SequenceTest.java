@@ -38,6 +38,7 @@ public class SequenceTest {
 
         correctSeq = null;
         while (correctSeq == null) {
+            jpf = new JPF(config);
             listener = new SequenceProduceListener();
             listener.setPositionFilter(Filter.createFilePathFilter());
             jpf.addListener(listener);
@@ -85,12 +86,20 @@ public class SequenceTest {
 
     @Test
     public void advance() throws Exception {
-        System.out.println(sequence);
+        //System.out.println(sequence);
         Pattern.setPatternSet("unicorn");
-        System.out.println(sequence.getPatterns());
+//        System.out.println("---------------seq patterns:");
+//        System.out.println(sequence.getPatterns());
         Set<Sequence> correctSeqs = new HashSet<>();
         correctSeqs.add(correctSeq);
         sequence.setCorrectSeqs(correctSeqs);
+//        System.out.println("---------------correct seq patterns");
+//        System.out.println(correctSeq.getPatterns());
+
+        if (correctSeq.getPatterns().size() == 0) {
+            System.out.println(correctSeq);
+        }
+        System.out.println(sequence.getPatterns().size() + " " + correctSeq.getPatterns().size());
         System.out.println(sequence.getDistance());
     }
 
