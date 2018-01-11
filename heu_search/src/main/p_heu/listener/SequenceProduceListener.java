@@ -10,6 +10,7 @@ import p_heu.entity.ReadWriteNode;
 import p_heu.entity.ScheduleNode;
 import p_heu.entity.SearchState;
 import p_heu.entity.filter.Filter;
+import p_heu.entity.pattern.Pattern;
 import p_heu.entity.sequence.Sequence;
 
 import java.util.ArrayList;
@@ -98,8 +99,6 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     private void initCurrentState(VM vm) {
-
-        System.out.println(vm.getStateId());
         currentState = new SearchState(vm.getStateId(), vm.getRestorableState());
         currentStateNodes = new ArrayList<>();
     }

@@ -13,9 +13,12 @@ public class Sequence {
 	private boolean finished;
 	private boolean result;
 	private int distance;
+	private Set<Pattern> patterns;
+	private Set<Sequence> correctSeqs;
 
 	//distance的值是否过期
 	private boolean consist;
+	private boolean matched;
 	
 	public Sequence() {
 		this.nodes = new ArrayList<>();
@@ -24,10 +27,18 @@ public class Sequence {
 		this.result = false;
 		this.distance = 0;
 		this.consist = true;
+		this.patterns = null;
+		this.matched = false;
+		this.correctSeqs = null;
 	}
 
+	public Sequence(Set<Sequence> correctSeqs) {
+        this();
+	    this.correctSeqs = correctSeqs;
+    }
+
 	private Sequence(List<Node> nodes, List<SearchState> states, boolean finished,
-                     boolean result, int distance, boolean consist) {
+                     boolean result, int distance, boolean consist, Set<Pattern> patterns, boolean matched, Set<Sequence> correctSeqs) {
 	    this.nodes = new ArrayList<>();
 	    this.nodes.addAll(nodes);
         this.states = new ArrayList<>();
@@ -36,10 +47,15 @@ public class Sequence {
 	    this.result = result;
 	    this.distance = distance;
 	    this.consist = consist;
+	    this.patterns = patterns;
+	    this.matched = matched;
+	    this.correctSeqs = correctSeqs;
     }
 
 	public Sequence copy() {
-	    return new Sequence(nodes, states, finished, result, distance, consist);
+	    return new Sequence(
+	            nodes, states, finished, result, distance, consist, patterns, matched, correctSeqs
+        );
     }
 	
 	public List<Node> getNodes() {
@@ -90,6 +106,7 @@ public class Sequence {
 	    seq.states.add(new SearchState(stateId, state));
 	    seq.nodes.addAll(nodes);
 	    seq.consist = false;
+	    seq.matched = false;
 	    return seq;
     }
 
@@ -110,9 +127,27 @@ public class Sequence {
 	}
 
 	private int calculateDistance() {
-	    //TODO 计算出当前序列（或子序列）的距离
-        Random random = new Random();
-        this.distance = random.nextInt(10);
+//        Random random = new Random();
+//        this.distance = random.nextInt(10);
+        if (correctSeqs == null) {
+            throw new RuntimeException(
+                    "correct sequence set is null: please use another constructor to create sequence or set correct sequence."
+            );
+        }
+
+        int smallestSize = -1;
+        for (Sequence correctSeq : correctSeqs) {
+            Set<Pattern> differencePatterns = new HashSet<>();
+            for (Pattern p : this.getPatterns()) {
+                if (!correctSeq.isIn(p)) {
+                    differencePatterns.add(p);
+                }
+            }
+            if (smallestSize == -1 || differencePatterns.size() < smallestSize) {
+                smallestSize = differencePatterns.size();
+            }
+        }
+        this.distance = smallestSize;
 
         this.consist = true;
         return this.distance;
@@ -121,6 +156,31 @@ public class Sequence {
     //当correctSeqs发生变动时，需要调用，使distance保持更新
     public void distanceNeedUpdate() {
 	    this.consist = false;
+    }
+
+    public Set<Pattern> getPatterns() {
+	    if (matched) {
+	        return this.patterns;
+        }
+        else {
+	        this.patterns = matchPatterns(Pattern.getPatternSet());
+	        this.matched = true;
+	        return this.patterns;
+        }
+    }
+
+    public void setCorrectSeqs(Set<Sequence> correctSeqs) {
+	    this.correctSeqs = correctSeqs;
+    }
+
+    public boolean isIn(Pattern pattern) {
+	    Set<Pattern> patterns = this.getPatterns();
+	    for (Pattern p : patterns) {
+	        if (p.isSamePattern(pattern)) {
+	            return true;
+            }
+        }
+        return false;
     }
 	
 	public Set<Pattern> matchPatterns(String patternSet) {
@@ -221,8 +281,6 @@ public class Sequence {
         stringBuilder.append(finished);
         stringBuilder.append("\n\tresult: ");
         stringBuilder.append(result);
-        stringBuilder.append("\n\tdistance: ");
-        stringBuilder.append(getDistance());
         stringBuilder.append("\n}");
 	    return stringBuilder.toString();
     }

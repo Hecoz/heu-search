@@ -10,7 +10,9 @@ import p_heu.entity.filter.Filter;
 import p_heu.entity.pattern.Pattern;
 import p_heu.listener.SequenceProduceListener;
 
+import java.io.SequenceInputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,13 +20,14 @@ import static org.junit.Assert.*;
 
 public class SequenceTest {
     private Sequence sequence;
+    private Sequence correctSeq;
 
     @Before
     public void init() throws Exception {
         String[] str = new String[]{
                 "+classpath=../../out/production/heu_search",
                 "+search.class=p_heu.search.SingleExecutionSearch",
-                "hashcodetest.HashCodeTest"};
+                "CheckField"};
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();
@@ -32,6 +35,17 @@ public class SequenceTest {
         jpf.addListener(listener);
         jpf.run();
         sequence = listener.getSequence();
+
+        correctSeq = null;
+        while (correctSeq == null) {
+            listener = new SequenceProduceListener();
+            listener.setPositionFilter(Filter.createFilePathFilter());
+            jpf.addListener(listener);
+            jpf.run();
+            if (listener.getSequence().getResult()) {
+                correctSeq = listener.getSequence();
+            }
+        }
     }
 
     @Test
@@ -71,6 +85,13 @@ public class SequenceTest {
 
     @Test
     public void advance() throws Exception {
+        System.out.println(sequence);
+        Pattern.setPatternSet("unicorn");
+        System.out.println(sequence.getPatterns());
+        Set<Sequence> correctSeqs = new HashSet<>();
+        correctSeqs.add(correctSeq);
+        sequence.setCorrectSeqs(correctSeqs);
+        System.out.println(sequence.getDistance());
     }
 
     @Test

@@ -6,10 +6,12 @@ import p_heu.entity.ReadWriteNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class Pattern {
 	protected PatternType patternType;
     protected ReadWriteNode[] nodes;
+    protected static String patternSet = "falcon";
 
     private static PatternType rw = new PatternType("R1(x), W2(x)");
     private static PatternType wr = new PatternType("W1(x), R2(x)");
@@ -36,6 +38,14 @@ public class Pattern {
 	public void setNodes(ReadWriteNode[] nodes) {
 		this.nodes = nodes;
 	}
+
+	public static String getPatternSet() {
+	    return patternSet;
+    }
+
+    public static void setPatternSet(String patternSet) {
+	    Pattern.patternSet = patternSet;
+    }
 	
 	public boolean isMatched() {
 		return nodes != null;

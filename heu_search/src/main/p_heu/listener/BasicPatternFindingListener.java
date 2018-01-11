@@ -21,7 +21,6 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     private Sequence sequence;
     private SearchState currentState;
     private ArrayList<Node> currentStateNodes;
-    private Search search;
     private int nodeId;
     private int lastStateId;
     private boolean execResult;
@@ -32,7 +31,6 @@ public class BasicPatternFindingListener extends ListenerAdapter {
         this.sequence = new Sequence();
         currentState = null;
         currentStateNodes = null;
-        search = null;
         nodeId = 0;
         lastStateId = 0;
         execResult = true;
@@ -47,8 +45,6 @@ public class BasicPatternFindingListener extends ListenerAdapter {
             currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
         }
         currentStateNodes = new ArrayList<>();
-        search = vm.getSearch();
-
     }
 
     private void saveLastState() {
