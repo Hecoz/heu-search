@@ -15,6 +15,7 @@ import p_heu.entity.sequence.Sequence;
 import p_heu.search.*;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 public class BasicPatternFindingListener extends ListenerAdapter {
 
@@ -22,27 +23,33 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     private SearchState currentState;
     private ArrayList<Node> currentStateNodes;
     private int nodeId;
-    private int lastStateId;
     private boolean execResult;
     private Filter positionFilter;
+    private Set<Sequence> correctSeqs;
 
-    public BasicPatternFindingListener() {
+    public BasicPatternFindingListener(Set<Sequence> correctSeqs) {
 
-        this.sequence = new Sequence();
+        this.sequence = new Sequence(correctSeqs);
+        this.correctSeqs = correctSeqs;
         currentState = null;
         currentStateNodes = null;
         nodeId = 0;
-        lastStateId = 0;
         execResult = true;
         positionFilter = null;
+
     }
 
-    private void initCurrentState(VM vm) {
-        ChoiceGenerator<?> currentCG = vm.getChoiceGenerator();
-        if(currentCG != null){
-            currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
-        }else{
-            currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
+    private void initCurrentState(VM vm,Search search) {
+
+        DistanceBasedSearch dbsearch = (DistanceBasedSearch) search;
+        //从search中，获取正确的序列个数
+        correctSeqs = dbsearch.getCorrectSeqs();
+        this.sequence = new Sequence(correctSeqs);
+        currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
+        //将当前的sequence,传入search中
+        if (currentState != null) {
+            saveLastState();
+            dbsearch.addCurrentSequence(sequence);
         }
         currentStateNodes = new ArrayList<>();
     }
@@ -66,20 +73,17 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     @Override
     public void searchStarted(Search search) {
         super.searchStarted(search);
-        //System.out.println("search i am the first you garbage");
-        VM vm = search.getVM();
-        initCurrentState(vm);
+        DistanceBasedSearch dbsearch = (DistanceBasedSearch) search;
+        //设置search中的正确序列，为初始化中第一个正确的执行序列
+        dbsearch.setCorrectSeqs(correctSeqs);
+        currentStateNodes = new ArrayList<>();
     }
 
+    @Override
     public void stateAdvanced(Search search) {
-        DistanceBasedSearch dbsearch = (DistanceBasedSearch) search;
-        //System.out.println("listener i am the first");
-        if (currentState != null) {
-            saveLastState();
-            dbsearch.addQueue(sequence);
-        }
+
         VM vm = search.getVM();
-        initCurrentState(vm);
+        initCurrentState(vm,search);
     }
 
     @Override
@@ -137,3 +141,4 @@ public class BasicPatternFindingListener extends ListenerAdapter {
         sequence = sequence.advanceToEnd(currentState.getStateId(), currentState.getState(), currentStateNodes, execResult);
     }
 }
+

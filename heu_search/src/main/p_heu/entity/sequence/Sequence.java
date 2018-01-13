@@ -52,7 +52,15 @@ public class Sequence {
 	    this.correctSeqs = correctSeqs;
     }
 
-	public Sequence copy() {
+    public void setFinished(boolean finished) {
+        this.finished = finished;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
+
+    public Sequence copy() {
 	    return new Sequence(
 	            nodes, states, finished, result, distance, consist, patterns, matched, correctSeqs
         );
