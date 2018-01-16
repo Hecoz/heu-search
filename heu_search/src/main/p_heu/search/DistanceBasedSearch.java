@@ -16,6 +16,7 @@ public abstract class DistanceBasedSearch extends Search {
     protected LinkedList<Sequence> queue;
     protected Sequence revSequence;
     protected int scheduleThreshod;
+    protected Sequence errorSequence;
 
     protected DistanceBasedSearch(Config config, VM vm) {
         super(config, vm);
@@ -23,6 +24,7 @@ public abstract class DistanceBasedSearch extends Search {
         this.queue = new LinkedList<>();
         this.revSequence = null;
         scheduleThreshod = 2;
+        errorSequence = null;
     }
 
     @Override
@@ -57,12 +59,16 @@ public abstract class DistanceBasedSearch extends Search {
                 if(currentError != null){
                     notifyPropertyViolated();
                     if(hasPropertyTermination()){
+                        errorSequence = sequence;
+                        System.out.println("\n\n\n\n\n - - - - - - - - - - - - - - - - INNER ERROR SEQUENCE - - - - - - - - - - - - - - - -");
+                        System.out.println(sequence);
                         break;
                     }
                 }
                 if(!checkStateSpaceLimit()){
                     notifySearchConstraintHit("memory limit reached: " + minFreeMemory);
                     //can't go on, we exhausted our memory
+                    System.out.println("memory limit reached + + +  + + +  + + + + +");
                     break;
                 }
                 if(backtrack()){
@@ -96,8 +102,9 @@ public abstract class DistanceBasedSearch extends Search {
             }
         }
 
-        System.out.println(sequence);
-        System.out.println(correctSeqs.size());
+        //System.out.println(sequence);
+        //System.out.println(correctSeqs.size());
+        //errorSequence = sequence;
         notifySearchFinished();
     }
 
@@ -118,6 +125,10 @@ public abstract class DistanceBasedSearch extends Search {
 
     public void addCurrentSequence(Sequence seq){
         this.revSequence = seq;
+    }
+
+    public Sequence getErrorSequence() {
+        return errorSequence;
     }
 
     public void addQueue(Sequence seq) {

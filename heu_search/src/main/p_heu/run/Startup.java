@@ -40,8 +40,7 @@ public class Startup {
 		JPF jpf = new JPF(config);
 		jpf.addListener(listener);
 		jpf.run();
-
-		//System.out.println(listener.getSequence());
+		System.out.println(listener.getErrorSequence());
 	}
 
 	public static Sequence getCorrectSequence(){
@@ -60,4 +59,6 @@ public class Startup {
 		jpf.run();
 		return listener.getSequence();
 	}
+
+
 }

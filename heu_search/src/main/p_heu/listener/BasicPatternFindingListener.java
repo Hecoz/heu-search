@@ -26,6 +26,7 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     private boolean execResult;
     private Filter positionFilter;
     private Set<Sequence> correctSeqs;
+    private Sequence errorSequence;
 
     public BasicPatternFindingListener(Set<Sequence> correctSeqs) {
 
@@ -36,7 +37,7 @@ public class BasicPatternFindingListener extends ListenerAdapter {
         nodeId = 0;
         execResult = true;
         positionFilter = null;
-
+        errorSequence = null;
     }
 
     private void initCurrentState(VM vm,Search search) {
@@ -64,6 +65,10 @@ public class BasicPatternFindingListener extends ListenerAdapter {
 
     private int getNodeId() {
         return nodeId++;
+    }
+
+    public Sequence getErrorSequence() {
+        return errorSequence;
     }
 
     public void setPositionFilter(Filter filter) {
@@ -97,26 +102,26 @@ public class BasicPatternFindingListener extends ListenerAdapter {
         execResult = false;
     }
 
-    @Override
-    public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
-        super.instructionExecuted(vm, currentThread, nextInstruction, executedInstruction);
-        if (executedInstruction instanceof FieldInstruction) {
-            FieldInstruction fins = (FieldInstruction)executedInstruction;
-
-            if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
-                return;
-            }
-
-            FieldInfo fi = fins.getFieldInfo();
-            ElementInfo ei = fins.getElementInfo(currentThread);
-
-            String type = fins.isRead() ? "READ" : "WRITE";
-            String eiString = ei == null ? "null" : ei.toString();
-            String fiName = fi.getName();
-            ReadWriteNode node = new ReadWriteNode(getNodeId(), eiString, fiName, type, currentThread.getName(), fins.getFileLocation());
-            currentStateNodes.add(node);
-        }
-    }
+//    @Override
+//    public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
+//        super.instructionExecuted(vm, currentThread, nextInstruction, executedInstruction);
+//        if (executedInstruction instanceof FieldInstruction) {
+//            FieldInstruction fins = (FieldInstruction)executedInstruction;
+//
+//            if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
+//                return;
+//            }
+//
+//            FieldInfo fi = fins.getFieldInfo();
+//            ElementInfo ei = fins.getElementInfo(currentThread);
+//
+//            String type = fins.isRead() ? "READ" : "WRITE";
+//            String eiString = ei == null ? "null" : ei.toString();
+//            String fiName = fi.getName();
+//            ReadWriteNode node = new ReadWriteNode(getNodeId(), eiString, fiName, type, currentThread.getName(), fins.getFileLocation());
+//            currentStateNodes.add(node);
+//        }
+//    }
 
     @Override
     public void choiceGeneratorAdvanced(VM vm, ChoiceGenerator<?> currentCG) {
@@ -128,6 +133,12 @@ public class BasicPatternFindingListener extends ListenerAdapter {
                 return;
             }
             ThreadInfo ti = (ThreadInfo)currentCG.getNextChoice();
+//            for(int i = 0; i < currentCG.getTotalNumberOfChoices();i++){
+//                System.out.println(currentCG.getChoice(i));
+//            }
+//            System.out.println("getNextChoice : " + ti);
+//            System.out.println("getThreadInfo : " + currentCG.getThreadInfo());
+//            System.out.println("- - - - - - - - - - - -- - - - - -- - - - - -");
             Instruction insn = ti.getPC();
             String type = insn.getClass().getName();
             ScheduleNode node = new ScheduleNode(getNodeId(), ti.getName(), insn.getFileLocation(), type);
@@ -138,7 +149,11 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     @Override
     public void searchFinished(Search search) {
         super.searchFinished(search);
-        sequence = sequence.advanceToEnd(currentState.getStateId(), currentState.getState(), currentStateNodes, execResult);
+        //VM vm = search.getVM();
+        //initCurrentState(vm,search);
+        errorSequence = ((DistanceBasedSearch) search).getErrorSequence();
+        errorSequence = errorSequence.advanceToEnd(currentState.getStateId(), currentState.getState(), sequence.getNodes(), execResult);
+        //System.out.println(errorSequence);
     }
 }
 
