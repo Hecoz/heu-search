@@ -28,13 +28,14 @@ public class Verify {
         };
         System.out.println(errorSequence);
         Config config = new Config(str);
-        //VerifyErrorSequenceListener listener = new VerifyErrorSequenceListener(errorSequence);
-        VerifyErrorSequenceSListener listener = new VerifyErrorSequenceSListener(errorSequence);
         JPF jpf = new JPF(config);
+        VerifyErrorSequenceSListener listener = new VerifyErrorSequenceSListener(errorSequence);
+        Filter filter = Filter.createFilePathFilter();
+        listener.setPositionFilter(filter);
+
         jpf.addListener(listener);
         jpf.run();
         System.out.println(listener.getSequence());
-
     }
 
     public static Sequence getCorrectSequence(){

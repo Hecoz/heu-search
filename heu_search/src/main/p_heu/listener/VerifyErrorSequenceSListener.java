@@ -80,50 +80,23 @@ public class VerifyErrorSequenceSListener extends ListenerAdapter {
         initCurrentState(vm,search);
     }
 
-//    public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
-//        if (executedInstruction instanceof FieldInstruction) {
-//            FieldInstruction fins = (FieldInstruction)executedInstruction;
-//            //position filter
-//            //System.out.println(fins.getFileLocation());
-//
-//            if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
-//                return;
-//            }
-//
-//            FieldInfo fi = fins.getFieldInfo();
-//            ElementInfo ei = fins.getElementInfo(currentThread);
-//
-//            String type = fins.isRead() ? "READ" : "WRITE";
-//            String eiString = ei == null ? "null" : ei.toString();
-//            String fiName = fi.getName();
-//            ReadWriteNode node = new ReadWriteNode(getNodeId(), eiString, fiName, type, currentThread.getName(), fins.getFileLocation());
-//            currentStateNodes.add(node);
-//        }
-//    }
+    public void instructionExecuted(VM vm, ThreadInfo currentThread, Instruction nextInstruction, Instruction executedInstruction) {
+        if (executedInstruction instanceof FieldInstruction) {
+            FieldInstruction fins = (FieldInstruction)executedInstruction;
+            if (positionFilter != null && !positionFilter.filter(fins.getFileLocation())) {
+                return;
+            }
 
-//    @Override
-//    public void choiceGeneratorSet(VM vm, ChoiceGenerator<?> newCG) {
-//        super.choiceGeneratorSet(vm, newCG);
-//        int numOfChoice = newCG.getTotalNumberOfChoices();
-//        Object[] currentChoices = (Object[]) newCG.getAllChoices();
-//        ScheduleNode currentScheduleNode = null;
-////        for(int i = 0; i < numOfChoice;i++){
-////            System.out.println(currentCG.getChoice(i));
-////        }
-//        if (newCG instanceof ThreadChoiceFromSet) {
-//            if (!scheduleNodes.isEmpty()) {
-//
-//                currentScheduleNode = scheduleNodes.poll();
-//                for (int i = 0; i < numOfChoice; i++) {
-//                    if (((ThreadInfo) currentChoices[i]).getName().equals(currentScheduleNode.getThread())) {
-//                        newCG.select(i);
-//                        break;
-//                    }
-//                }
-//                //System.out.println("- - - - - - - - - - - - - - - - - - - ");
-//            }
-//        }
-//    }
+            FieldInfo fi = fins.getFieldInfo();
+            ElementInfo ei = fins.getElementInfo(currentThread);
+
+            String type = fins.isRead() ? "READ" : "WRITE";
+            String eiString = ei == null ? "null" : ei.toString();
+            String fiName = fi.getName();
+            ReadWriteNode node = new ReadWriteNode(getNodeId(), eiString, fiName, type, currentThread.getName(), fins.getFileLocation());
+            currentStateNodes.add(node);
+        }
+    }
 
     public void choiceGeneratorAdvanced(VM vm, ChoiceGenerator<?> currentCG) {
 

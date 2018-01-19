@@ -60,8 +60,8 @@ public abstract class DistanceBasedSearch extends Search {
                     notifyPropertyViolated();
                     if(hasPropertyTermination()){
                         errorSequence = sequence;
-                        System.out.println("\n\n\n\n\n - - - - - - - - - - - - - - - - INNER ERROR SEQUENCE - - - - - - - - - - - - - - - -");
-                        System.out.println(sequence);
+//                        System.out.println("\n\n\n\n\n - - - - - - - - - - - - - - - - INNER ERROR SEQUENCE - - - - - - - - - - - - - - - -");
+//                        System.out.println(sequence);
                         break;
                     }
                 }
@@ -103,7 +103,7 @@ public abstract class DistanceBasedSearch extends Search {
         }
 
         //System.out.println(sequence);
-        //System.out.println(correctSeqs.size());
+        //System.out.println("correctSeqs.size() ： " + correctSeqs.size());
         //errorSequence = sequence;
         notifySearchFinished();
     }

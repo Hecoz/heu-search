@@ -7,39 +7,45 @@ import p_heu.entity.sequence.Sequence;
 import p_heu.listener.BasicPatternFindingListener;
 import p_heu.listener.SequenceProduceListener;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Startup {
-	public static void main(String[] args) {
+public class CaculateRunNum {
+	public static void main(String[] args) throws IOException {
 
-		boolean isCorrect = false;
 		Sequence correctSeq = null;
-
-		while(!isCorrect){
-			correctSeq = getCorrectSequence();
-			isCorrect = correctSeq.getResult();
-		}
-
-		System.out.println("\n\n\n\n查找到正确执行序列：\n");
-
-		Set<Sequence> correctSeqs = new HashSet<>();
-		correctSeqs.add(correctSeq);
+		Set<Sequence> correctSeqs = null;
+		FileWriter fw = new FileWriter("./test.txt");
 
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.PatternDistanceBasedSearch",
 				"CheckField"};
-
 		Config config = new Config(str);
-		BasicPatternFindingListener listener = new BasicPatternFindingListener(correctSeqs);
 		Filter filter = Filter.createFilePathFilter();
-		listener.setPositionFilter(filter);
-		JPF jpf = new JPF(config);
-		jpf.addListener(listener);
-		jpf.run();
-		System.out.println(listener.getErrorSequence());
-		System.out.println(listener.getCorrectSeqs().size());
+
+		for(int i = 0;i<100;i++){
+
+			correctSeq = getCorrectSequence();
+			if(correctSeq.getResult() == true){
+
+				correctSeqs = new HashSet<>();
+				correctSeqs.add(correctSeq);
+				BasicPatternFindingListener listener = new BasicPatternFindingListener(correctSeqs);
+				listener.setPositionFilter(filter);
+				JPF jpf = new JPF(config);
+				jpf.addListener(listener);
+				jpf.run();
+				fw.write((i+1) + " " + (listener.getCorrectSeqs().size()+1) + "\n");
+
+			}else{
+				fw.write((i+1) + " " + 1 + "\n");
+			}
+
+		}
+		fw.close();
 	}
 
 	public static Sequence getCorrectSequence(){
