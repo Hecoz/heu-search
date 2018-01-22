@@ -212,7 +212,19 @@ public class Sequence {
 	    Set<Pattern> result = new HashSet<>();
         MemoryAccessPair[] pairs = Pattern.getMemoryAccessPairs();
         List<MemoryAccessPair> matchedPairs = matchPairs(pairs);
-        result.addAll(matchedPairs);
+        for (Pattern pair : matchedPairs) {
+            boolean contains = false;
+            for (Pattern p : result) {
+                if (p.isSameExecptThread(pair)) {
+                    contains = true;
+                    break;
+                }
+            }
+            if (!contains) {
+                result.add(pair);
+            }
+        }
+//        result.addAll(matchedPairs);
         for (int i = 0; i < matchedPairs.size(); ++i) {
             for (int j = i + 1; j < matchedPairs.size(); ++j) {
                 MemoryAccessPair pair1 = matchedPairs.get(i);
