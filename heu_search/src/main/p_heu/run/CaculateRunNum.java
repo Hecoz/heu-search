@@ -2,11 +2,16 @@ package p_heu.run;
 
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import p_heu.entity.filter.Filter;
 import p_heu.entity.sequence.Sequence;
 import p_heu.listener.BasicPatternFindingListener;
 import p_heu.listener.SequenceProduceListener;
 
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
@@ -16,19 +21,26 @@ public class CaculateRunNum {
 	public static void main(String[] args) throws IOException {
 
 		Sequence correctSeq = null;
+		int randomTime = 0;
 		Set<Sequence> correctSeqs = null;
-		FileWriter fw = new FileWriter("./test.txt");
+		String testFileName = "CheckField";//"hashcodetest.HashCodeTest";//"CheckField"
+		int iteration = 100;
 
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.PatternDistanceBasedSearch",
-				"CheckField"};
+				testFileName};
 		Config config = new Config(str);
 		Filter filter = Filter.createFilePathFilter();
 
-		for(int i = 0;i<100;i++){
+		HSSFWorkbook workbook = new HSSFWorkbook();
+		HSSFSheet sheet = workbook.createSheet("Number");
+		HSSFRow row = null;
 
-			correctSeq = getCorrectSequence();
+		for(int i = 0;i<iteration;i++){
+
+			row = sheet.createRow(i);
+			correctSeq = getCorrectSequence(testFileName);
 			if(correctSeq.getResult() == true){
 
 				correctSeqs = new HashSet<>();
@@ -38,22 +50,40 @@ public class CaculateRunNum {
 				JPF jpf = new JPF(config);
 				jpf.addListener(listener);
 				jpf.run();
-				fw.write((i+1) + " " + (listener.getCorrectSeqs().size()+1) + "\n");
+
+				row.createCell(0).setCellValue(i);
+				//row.createCell(1).setCellValue(listener.getRUNMBER());
+				row.createCell(1).setCellValue(listener.getCorrectSeqs().size()+1);
 
 			}else{
-				fw.write((i+1) + " " + 1 + "\n");
+				row.createCell(0).setCellValue(i);
+				row.createCell(1).setCellValue(1);
+			}
+		}
+
+		for(int i = 0;i<iteration;i++){
+			row = sheet.getRow(i);
+			randomTime = 1;
+			while(getCorrectSequence(testFileName).getResult()){
+				randomTime++;
 			}
 
+			row.createCell(2).setCellValue(randomTime);
 		}
-		fw.close();
+
+		FileOutputStream fos = new FileOutputStream("./" + testFileName + "_" + iteration + ".xls");
+		workbook.write(fos);
+		fos.close();
 	}
 
-	public static Sequence getCorrectSequence(){
+
+
+	public static Sequence getCorrectSequence(String testFileName){
 
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.SingleExecutionSearch",
-				"CheckField"};
+				testFileName};
 		Config config = new Config(str);
 		JPF jpf = new JPF(config);
 		SequenceProduceListener listener = new SequenceProduceListener();

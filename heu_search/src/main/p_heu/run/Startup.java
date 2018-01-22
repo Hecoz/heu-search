@@ -22,7 +22,7 @@ public class Startup {
 		}
 
 		System.out.println("\n\n\n\n查找到正确执行序列：\n");
-
+		System.out.println(correctSeq);
 		Set<Sequence> correctSeqs = new HashSet<>();
 		correctSeqs.add(correctSeq);
 
@@ -58,6 +58,4 @@ public class Startup {
 		jpf.run();
 		return listener.getSequence();
 	}
-
-
 }

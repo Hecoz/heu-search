@@ -9,6 +9,7 @@ import gov.nasa.jpf.vm.VM;
 import p_heu.entity.Node;
 import p_heu.entity.SearchState;
 import p_heu.entity.sequence.Sequence;
+import p_heu.listener.BasicPatternFindingListener;
 
 public abstract class DistanceBasedSearch extends Search {
 
@@ -16,6 +17,7 @@ public abstract class DistanceBasedSearch extends Search {
     protected LinkedList<Sequence> queue;
     protected Sequence revSequence;
     protected int scheduleThreshod;
+    protected LinkedList<Sequence> correctTempList;
     protected Sequence errorSequence;
 
     protected DistanceBasedSearch(Config config, VM vm) {
@@ -25,6 +27,7 @@ public abstract class DistanceBasedSearch extends Search {
         this.revSequence = null;
         scheduleThreshod = 2;
         errorSequence = null;
+        correctTempList = new LinkedList<>();
     }
 
     @Override
@@ -50,6 +53,12 @@ public abstract class DistanceBasedSearch extends Search {
         RestorableVMState init_state = vm.getRestorableState();
         while(!done){
 
+            if(isEndState()){
+                //设置正确执行序列的状态为TRUE
+                sequence.setResult(true);
+                sequence.setFinished(true);
+                correctTempList.add(sequence);
+            }
             while(forward()){
 
                 notifyStateAdvanced();
@@ -68,7 +77,7 @@ public abstract class DistanceBasedSearch extends Search {
                 if(!checkStateSpaceLimit()){
                     notifySearchConstraintHit("memory limit reached: " + minFreeMemory);
                     //can't go on, we exhausted our memory
-                    System.out.println("memory limit reached + + +  + + +  + + + + +");
+                    System.out.println("memory limit reached + + + + + + + + + + +");
                     break;
                 }
                 if(backtrack()){
@@ -76,7 +85,6 @@ public abstract class DistanceBasedSearch extends Search {
                     notifyStateBacktracked();
                 }
             }
-            notifyStateProcessed();
             //对当前队列进行排序
             sortQueue();
             //根据阈值删除队列中多余的sequence
@@ -88,16 +96,15 @@ public abstract class DistanceBasedSearch extends Search {
                 sequence = queue.poll();
                 vm.restoreState(sequence.getLastState().getState());
             }else{
-                //设置正确执行序列的状态为TRUE
-                sequence.setResult(true);
-                sequence.setFinished(true);
-                //将正确的sequence添加到正确的序列集合中
-                addCorrectSeq(sequence);
+                //将所有正确的sequence添加到正确的序列集合中
+                addCorrectSeqs(correctTempList);
+                //notifyStateProcessed();
                 done = false;
                 vm.restoreState(init_state);
                 vm.resetNextCG();
                 //当前序列置为空
                 sequence = null;
+                correctTempList.clear();
                 //break;
             }
         }
@@ -119,8 +126,8 @@ public abstract class DistanceBasedSearch extends Search {
 
     }
 
-    protected void addCorrectSeq(Sequence seq) {
-        correctSeqs.add(seq);
+    protected void addCorrectSeqs(LinkedList<Sequence> seqs) {
+        correctSeqs.addAll(seqs);
     }
 
     public void addCurrentSequence(Sequence seq){
@@ -155,7 +162,6 @@ public abstract class DistanceBasedSearch extends Search {
     public void stateAdvance(int lastStateId, List<Node> nodes) {
         Sequence seq = findSequenceByLastState(lastStateId);
         queue.remove(seq);
-
     }
 
     protected void sortQueue() {
