@@ -68,6 +68,26 @@ public class Pattern {
 		}
 		return true;
 	}
+
+	public boolean isSameExecptThread(Pattern pattern) {
+        if (!(this.isMatched() && pattern.isMatched())) {
+            throw new RuntimeException("Two patterns should be both matched.");
+        }
+
+        if (!this.isSamePatternType(pattern)) {
+            return false;
+        }
+
+        ReadWriteNode[] nodes = pattern.getNodes();
+        for (int i = 0; i < this.nodes.length; ++i) {
+            ReadWriteNode node1 = this.nodes[i];
+            ReadWriteNode node2 = nodes[i];
+            if (!node1.isSameExceptThread(node2)) {
+                return false;
+            }
+        }
+        return true;
+    }
 	
 	public boolean isSamePatternType(Pattern pattern) {
 		return this.patternType.isSame(pattern.getPatternType());

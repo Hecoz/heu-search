@@ -58,6 +58,21 @@ public class ReadWriteNode extends Node {
 		return false;
 	}
 
+	public boolean isSameExceptThread(Node node) {
+		if (node instanceof ReadWriteNode) {
+			ReadWriteNode rwNode = (ReadWriteNode)node;
+			String element1 = this.element.lastIndexOf("@") == -1 ?
+					this.element : this.element.substring(0, this.element.lastIndexOf("@"));
+			String element2 = rwNode.getElement().lastIndexOf("@") == -1 ?
+					rwNode.getElement() : rwNode.getElement().substring(0, rwNode.getElement().lastIndexOf("@"));
+
+			return element1.equals(element2) && this.field.equals(rwNode.getField())
+					&& this.type.equals(rwNode.getType())
+					&& this.position.equals(rwNode.getPosition());
+		}
+		return false;
+	}
+
 	public boolean isSameInstance(ReadWriteNode node) {
 		return this.element.equals(node.getElement()) && this.getField().equals(node.getField());
 	}

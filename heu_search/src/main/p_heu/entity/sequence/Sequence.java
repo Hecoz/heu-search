@@ -201,7 +201,7 @@ public class Sequence {
     public boolean isIn(Pattern pattern) {
 	    Set<Pattern> patterns = this.getPatterns();
 	    for (Pattern p : patterns) {
-	        if (p.isSamePattern(pattern)) {
+	        if (p.isSameExecptThread(pattern)) {
 	            return true;
             }
         }
@@ -228,7 +228,18 @@ public class Sequence {
                     throw new RuntimeException("unknown pattern set");
                 }
                 if (pattern != null) {
-                    result.add(pattern);
+
+                    //检查result中是否已经有相同的pattern
+                    boolean contains = false;
+                    for (Pattern p : result) {
+                        if (pattern.isSameExecptThread(p)) {
+                            contains = true;
+                            break;
+                        }
+                    }
+                    if (!contains) {
+                        result.add(pattern);
+                    }
                 }
             }
         }
