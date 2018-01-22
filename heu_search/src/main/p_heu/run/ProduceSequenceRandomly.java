@@ -3,7 +3,11 @@ package p_heu.run;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.JPF;
 import p_heu.entity.filter.Filter;
+import p_heu.entity.pattern.Pattern;
+import p_heu.entity.sequence.Sequence;
 import p_heu.listener.SequenceProduceListener;
+
+import java.util.Set;
 
 public class ProduceSequenceRandomly {
     public static void main(String[] args) {
@@ -19,6 +23,10 @@ public class ProduceSequenceRandomly {
 
         jpf.addListener(listener);
         jpf.run();
-        System.out.println(listener.getSequence());
+        Sequence seq = listener.getSequence();
+        Set<Pattern> patterns = seq.getPatterns();
+        if (seq.getResult() == false) {
+            System.out.println(patterns);
+        }
     }
 }

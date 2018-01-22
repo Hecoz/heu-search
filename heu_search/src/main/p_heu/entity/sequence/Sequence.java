@@ -134,6 +134,22 @@ public class Sequence {
         }
 	}
 
+	public int getThreadSwitch() {
+	    int count = 0;
+	    ScheduleNode last = null;
+	    for (Node node : this.nodes) {
+	        if (!(node instanceof ScheduleNode)) {
+	            continue;
+            }
+            ScheduleNode current = (ScheduleNode)node;
+	        if (last != null && (!last.getThread().equals(current.getThread()))) {
+	            count += 1;
+            }
+            last = current;
+        }
+        return count;
+    }
+
 	private int calculateDistance() {
 //        Random random = new Random();
 //        this.distance = random.nextInt(10);

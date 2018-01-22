@@ -14,7 +14,13 @@ public class PatternDistanceBasedSearch extends DistanceBasedSearch {
 
         @Override
         public int compare(Sequence seq1, Sequence seq2) {
-            return -Integer.compare(seq1.getDistance(), seq2.getDistance());
+            int distanceComp = -Integer.compare(seq1.getDistance(), seq2.getDistance());
+            if (distanceComp == 0) {
+                return seq2.getThreadSwitch() - seq1.getThreadSwitch();
+            }
+            else {
+                return distanceComp;
+            }
         }
 
     }
