@@ -23,7 +23,7 @@ public class CaculateRunNum {
 		Sequence correctSeq = null;
 		int randomTime = 0;
 		Set<Sequence> correctSeqs = null;
-		String testFileName = "account.Main";//"CheckField"
+		String testFileName = "CheckField";//"CheckField"
 		int iteration = 100;
 
 		String[] str = new String[]{
