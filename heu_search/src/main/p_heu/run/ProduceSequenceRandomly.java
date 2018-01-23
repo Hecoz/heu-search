@@ -14,7 +14,7 @@ public class ProduceSequenceRandomly {
         String[] str = new String[]{
                 "+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.SingleExecutionSearch",
-                "hashcodetest.HashCodeTest"};
+                "CheckField"};
         Config config = new Config(str);
         JPF jpf = new JPF(config);
         SequenceProduceListener listener = new SequenceProduceListener();
@@ -24,9 +24,10 @@ public class ProduceSequenceRandomly {
         jpf.addListener(listener);
         jpf.run();
         Sequence seq = listener.getSequence();
+        System.out.println(seq.getStates().size());
         Set<Pattern> patterns = seq.getPatterns();
-        if (seq.getResult() == false) {
-            System.out.println(patterns);
-        }
+//        if (seq.getResult() == false) {
+//            System.out.println(patterns);
+//        }
     }
 }

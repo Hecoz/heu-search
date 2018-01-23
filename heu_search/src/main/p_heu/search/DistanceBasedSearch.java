@@ -2,6 +2,7 @@ package p_heu.search;
 
 import java.util.*;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.search.Search;
 import gov.nasa.jpf.vm.RestorableVMState;
@@ -17,7 +18,6 @@ public abstract class DistanceBasedSearch extends Search {
     protected LinkedList<Sequence> queue;
     protected Sequence revSequence;
     protected int scheduleThreshod;
-    protected LinkedList<Sequence> correctTempList;
     protected Sequence errorSequence;
 
     protected DistanceBasedSearch(Config config, VM vm) {
@@ -27,7 +27,6 @@ public abstract class DistanceBasedSearch extends Search {
         this.revSequence = null;
         scheduleThreshod = 2;
         errorSequence = null;
-        correctTempList = new LinkedList<>();
     }
 
     @Override
@@ -57,27 +56,28 @@ public abstract class DistanceBasedSearch extends Search {
                 //设置正确执行序列的状态为TRUE
                 sequence.setResult(true);
                 sequence.setFinished(true);
-                correctTempList.add(sequence);
+                addCorrectSeqs(sequence);
+                vm.restoreState(init_state);
+                vm.resetNextCG();
+                //当前序列置为空
+                sequence = null;
+                continue;
             }
             while(forward()){
 
                 notifyStateAdvanced();
                 //将当前的状态合并到上一状态之后，并添加到队列中
                 queue.add(mergeSeq(sequence,revSequence));
-
                 if(currentError != null){
                     notifyPropertyViolated();
                     if(hasPropertyTermination()){
                         errorSequence = sequence;
-//                        System.out.println("\n\n\n\n\n - - - - - - - - - - - - - - - - INNER ERROR SEQUENCE - - - - - - - - - - - - - - - -");
-//                        System.out.println(sequence);
                         break;
                     }
                 }
                 if(!checkStateSpaceLimit()){
                     notifySearchConstraintHit("memory limit reached: " + minFreeMemory);
                     //can't go on, we exhausted our memory
-                    System.out.println("memory limit reached + + + + + + + + + + +");
                     break;
                 }
                 if(backtrack()){
@@ -97,21 +97,15 @@ public abstract class DistanceBasedSearch extends Search {
                 vm.restoreState(sequence.getLastState().getState());
             }else{
                 //将所有正确的sequence添加到正确的序列集合中
-                addCorrectSeqs(correctTempList);
-                //notifyStateProcessed();
-                done = false;
+                sequence.setResult(true);
+                sequence.setFinished(true);
+                addCorrectSeqs(sequence);
                 vm.restoreState(init_state);
                 vm.resetNextCG();
                 //当前序列置为空
                 sequence = null;
-                correctTempList.clear();
-                //break;
             }
         }
-
-        //System.out.println(sequence);
-        //System.out.println("correctSeqs.size() ： " + correctSeqs.size());
-        //errorSequence = sequence;
         notifySearchFinished();
     }
 
@@ -126,8 +120,8 @@ public abstract class DistanceBasedSearch extends Search {
 
     }
 
-    protected void addCorrectSeqs(LinkedList<Sequence> seqs) {
-        correctSeqs.addAll(seqs);
+    protected void addCorrectSeqs(Sequence seqs) {
+        correctSeqs.add(seqs);
     }
 
     public void addCurrentSequence(Sequence seq){

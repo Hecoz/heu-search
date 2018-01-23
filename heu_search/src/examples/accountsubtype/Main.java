@@ -19,8 +19,8 @@ public class Main {
       int numPersonalAccounts = 1;
 
       if (args != null && args.length == 2) {
-	 numBusinessAccounts = Integer.parseInt(args[0]);
-	 numPersonalAccounts = Integer.parseInt(args[1]);
+         numBusinessAccounts = Integer.parseInt(args[0]);
+         numPersonalAccounts = Integer.parseInt(args[1]);
       } 
 
       // Create accouns with initial balance of 100
@@ -30,10 +30,9 @@ public class Main {
 
       // Check to see that all of the balances are stable
       for (int i=0; i < numBusinessAccounts+numPersonalAccounts; i++){
-	if (bank.getAccount(i).getBalance() != 300) {
-          throw new RuntimeException("bug found");
+        if (bank.getAccount(i).getBalance() != 300) {
+            throw new RuntimeException("bug found");
         }
       }
-
   }//end of function main
 }//end of class Main

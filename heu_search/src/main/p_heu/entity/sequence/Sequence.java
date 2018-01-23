@@ -310,7 +310,6 @@ public class Sequence {
         return null;
     }
 
-
 	public String toString() {
 	    StringBuilder stringBuilder = new StringBuilder("Sequence {\n");
         stringBuilder.append("\tnodes:\n");
