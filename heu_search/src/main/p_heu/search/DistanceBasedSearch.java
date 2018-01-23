@@ -62,8 +62,8 @@ public abstract class DistanceBasedSearch extends Search {
                 //当前序列置为空
                 sequence = null;
                 queue.clear();
-                System.out.println("\n - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-                System.out.println("find a correct Sequence :");
+//                System.out.println("\n - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+//                System.out.println("find a correct Sequence :");
                 continue;
             }
             while(forward()){
@@ -89,20 +89,20 @@ public abstract class DistanceBasedSearch extends Search {
                 }
             }
             //对当前队列进行排序
-            System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-            System.out.print("                                                                           ");
-            for (Sequence seq : queue){
-                System.out.print("(😯: " + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
-            }
-            System.out.println("");
+//            System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
+//            System.out.print("                                                                           ");
+//            for (Sequence seq : queue){
+//                System.out.print("(😯: " + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
+//            }
+//            System.out.println("");
             sortQueue();
-            if(queue.size()>0){
-                System.out.println("😄:" + queue.getFirst().getStates().size() + "," + queue.getFirst().getNodes().size());
-            }
-            for (Sequence seq : queue){
-                System.out.print("(😢" + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
-            }
-            System.out.println("");
+//            if(queue.size()>0){
+//                System.out.println("😄:" + queue.getFirst().getStates().size() + "," + queue.getFirst().getNodes().size());
+//            }
+//            for (Sequence seq : queue){
+//                System.out.print("(😢" + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
+//            }
+//            System.out.println("");
             //根据阈值删除队列中多余的sequence
             while(queue.size() > scheduleThreshod){
                 queue.removeLast();

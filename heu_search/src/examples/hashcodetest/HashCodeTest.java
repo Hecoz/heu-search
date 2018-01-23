@@ -31,7 +31,7 @@ public class HashCodeTest {
 
     //final static int TEST_NUMBER = 5;
 
-    final static int NUM_OF_THREADS = 3;
+    final static int NUM_OF_THREADS = 2;
 
     public void testHashCode() throws InterruptedException {
         IntRange rangeArrayA[] = new IntRange[TEST_LENGTH];

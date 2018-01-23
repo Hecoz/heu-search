@@ -23,8 +23,10 @@ public class CaculateRunNum {
 		Sequence correctSeq = null;
 		int randomTime = 0;
 		Set<Sequence> correctSeqs = null;
-		String testFileName = "CheckField";//"CheckField"
+		String testFileName = "hashcodetest.HashCodeTest";//"CheckField"
 		int iteration = 100;
+		int HEUNUM = 0;
+		int RANDOM = 0;
 
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
@@ -54,10 +56,12 @@ public class CaculateRunNum {
 				row.createCell(0).setCellValue(i);
 				//row.createCell(1).setCellValue(listener.getRUNMBER());
 				row.createCell(1).setCellValue(listener.getCorrectSeqs().size()+1);
+				HEUNUM += listener.getCorrectSeqs().size()+1;
 
 			}else{
 				row.createCell(0).setCellValue(i);
 				row.createCell(1).setCellValue(1);
+				HEUNUM += 1;
 			}
 		}
 
@@ -67,10 +71,13 @@ public class CaculateRunNum {
 			while(getCorrectSequence(testFileName).getResult()){
 				randomTime++;
 			}
-
+			RANDOM += randomTime;
 			row.createCell(2).setCellValue(randomTime);
 		}
-
+		row = sheet.createRow(100);
+		row.createCell(0).setCellValue("average:");
+		row.createCell(1).setCellValue(HEUNUM/100);
+		row.createCell(2).setCellValue(RANDOM/100);
 		FileOutputStream fos = new FileOutputStream("./" + testFileName + "_" + iteration + ".xls");
 		workbook.write(fos);
 		fos.close();
