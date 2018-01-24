@@ -18,12 +18,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CaculateRunNum {
+
 	public static void main(String[] args) throws IOException {
 
 		Sequence correctSeq = null;
 		int randomTime = 0;
 		Set<Sequence> correctSeqs = null;
-		String testFileName = "hashcodetest.HashCodeTest";//"CheckField"
+		String testFileName = "account.Main";//"CheckField"
 		int iteration = 100;
 		int HEUNUM = 0;
 		int RANDOM = 0;
@@ -56,7 +57,7 @@ public class CaculateRunNum {
 				row.createCell(0).setCellValue(i);
 				//row.createCell(1).setCellValue(listener.getRUNMBER());
 				row.createCell(1).setCellValue(listener.getCorrectSeqs().size()+1);
-				HEUNUM += listener.getCorrectSeqs().size()+1;
+				HEUNUM += (listener.getCorrectSeqs().size()+1);
 
 			}else{
 				row.createCell(0).setCellValue(i);
@@ -76,8 +77,8 @@ public class CaculateRunNum {
 		}
 		row = sheet.createRow(100);
 		row.createCell(0).setCellValue("average:");
-		row.createCell(1).setCellValue(HEUNUM/100);
-		row.createCell(2).setCellValue(RANDOM/100);
+		row.createCell(1).setCellValue(HEUNUM/100.0);
+		row.createCell(2).setCellValue(RANDOM/100.0);
 		FileOutputStream fos = new FileOutputStream("./" + testFileName + "_" + iteration + ".xls");
 		workbook.write(fos);
 		fos.close();

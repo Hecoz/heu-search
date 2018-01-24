@@ -67,6 +67,7 @@ public class SequenceProduceListener extends ListenerAdapter {
     }
 
     public void choiceGeneratorAdvanced(VM vm, ChoiceGenerator<?> currentCG) {
+
         if (currentCG instanceof ThreadChoiceFromSet) {
 
             ThreadInfo[] threads = ((ThreadChoiceFromSet)currentCG).getAllThreadChoices();
