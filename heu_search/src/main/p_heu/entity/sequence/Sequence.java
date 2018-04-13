@@ -65,6 +65,30 @@ public class Sequence {
 	            nodes, states, finished, result, distance, consist, patterns, matched, correctSeqs
         );
     }
+
+    private void reduceSeq() {
+        List<Node> nodesList = this.getNodes();
+        for (int i = 0; i < nodesList.size(); i++) {
+            if (nodesList.get(i) instanceof ReadWriteNode) {
+                for (int j = i - 1; j >= 0; j--) {
+                    if (nodesList.get(j) instanceof ReadWriteNode) {
+                        ReadWriteNode rwi = (ReadWriteNode) nodesList.get(i);
+                        ReadWriteNode rwj = (ReadWriteNode) nodesList.get(j);
+                        if ((rwi.getId() != rwj.getId())
+                                && rwi.getElement().equals(rwj.getElement())
+                                && rwi.getField().equals(rwj.getField())
+                                && rwi.getThread().equals(rwj.getThread())
+                                && rwi.getType().equals(rwj.getType())
+                                && rwi.getPosition().equals(rwj.getPosition())) {
+                            this.getNodes().remove(j);
+                            i--;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 	
 	public List<Node> getNodes() {
 		return this.nodes;
@@ -115,6 +139,7 @@ public class Sequence {
 	    seq.nodes.addAll(nodes);
 	    seq.consist = false;
 	    seq.matched = false;
+	    seq.reduceSeq();
 	    return seq;
     }
 
@@ -122,6 +147,9 @@ public class Sequence {
 	    Sequence seq = advance(stateId,state, nodes);
 	    seq.finished = true;
 	    seq.result = result;
+        seq.consist = false;
+        seq.matched = false;
+        seq.reduceSeq();
 	    return seq;
     }
 	
@@ -161,6 +189,7 @@ public class Sequence {
 
         int smallestSize = -1;
         for (Sequence correctSeq : correctSeqs) {
+
             Set<Pattern> differencePatterns = new HashSet<>();
             for (Pattern p : this.getPatterns()) {
                 if (!correctSeq.isIn(p)) {
@@ -272,18 +301,18 @@ public class Sequence {
     private Set<MemoryAccessPair> matchNext(ReadWriteNode node, int begin, MemoryAccessPair[] pairs) {
 	    Set<MemoryAccessPair> matchedPairs = new HashSet<>();
 	    for (int i = begin; i < this.nodes.size(); ++i) {
-	        if (!(this.nodes.get(i) instanceof ReadWriteNode)) {
+	        if (!(this.nodes.get(i) instanceof ReadWriteNode)) {//判断是否是读写点
 	            continue;
             }
             ReadWriteNode nextNode = (ReadWriteNode)this.nodes.get(i);
-	        if (!node.isSameInstance(nextNode)) {
+	        if (!node.isSameInstance(nextNode)) {   //  判断操作的是否是同一个变量
 	            continue;
             }
 	        MemoryAccessPair matchedPair = isMatch(node, nextNode, pairs);
-	        if (matchedPair != null) {
+	        if (matchedPair != null) {  //判断是否匹配成功
 	            matchedPairs.add(matchedPair);
             }
-            if (nextNode.getType().equals("WRITE")) {
+            if (nextNode.getType().equals("WRITE")) { //如果当前结点是WRITE不管匹配是否成功，都跳出循环
 	            break;
             }
         }

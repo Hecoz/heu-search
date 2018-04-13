@@ -2,7 +2,6 @@ package p_heu.search;
 
 import java.util.*;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import gov.nasa.jpf.Config;
 import gov.nasa.jpf.search.Search;
 import gov.nasa.jpf.vm.RestorableVMState;
@@ -10,7 +9,6 @@ import gov.nasa.jpf.vm.VM;
 import p_heu.entity.Node;
 import p_heu.entity.SearchState;
 import p_heu.entity.sequence.Sequence;
-import p_heu.listener.BasicPatternFindingListener;
 
 public abstract class DistanceBasedSearch extends Search {
 
@@ -62,8 +60,6 @@ public abstract class DistanceBasedSearch extends Search {
                 //当前序列置为空
                 sequence = null;
                 queue.clear();
-//                System.out.println("\n - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-//                System.out.println("find a correct Sequence :");
                 continue;
             }
             while(forward()){
@@ -89,24 +85,13 @@ public abstract class DistanceBasedSearch extends Search {
                 }
             }
             //对当前队列进行排序
-//            System.out.println(" - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ");
-//            System.out.print("                                                                           ");
-//            for (Sequence seq : queue){
-//                System.out.print("(😯: " + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
-//            }
-//            System.out.println("");
+            //randQueue();
             sortQueue();
-//            if(queue.size()>0){
-//                System.out.println("😄:" + queue.getFirst().getStates().size() + "," + queue.getFirst().getNodes().size());
-//            }
-//            for (Sequence seq : queue){
-//                System.out.print("(😢" + seq.getStates().size() + "," + seq.getNodes().size() + ") ");
-//            }
-//            System.out.println("");
             //根据阈值删除队列中多余的sequence
             while(queue.size() > scheduleThreshod){
                 queue.removeLast();
             }
+            //System.out.println(queue);
             //判断当前队列中是否存在sequence，当队列size 小于0 表明找到一个正确的sequence
             if(queue.size() > 0){
                 sequence = queue.poll();
@@ -120,6 +105,7 @@ public abstract class DistanceBasedSearch extends Search {
                 vm.resetNextCG();
                 //当前序列置为空
                 sequence = null;
+                System.gc();
             }
         }
         notifySearchFinished();
@@ -172,6 +158,11 @@ public abstract class DistanceBasedSearch extends Search {
     public void stateAdvance(int lastStateId, List<Node> nodes) {
         Sequence seq = findSequenceByLastState(lastStateId);
         queue.remove(seq);
+    }
+
+    protected void randQueue() {
+        Collections.shuffle(this.queue);
+        //Collections.sort(this.queue, getComparator());
     }
 
     protected void sortQueue() {

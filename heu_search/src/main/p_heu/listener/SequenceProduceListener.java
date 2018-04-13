@@ -60,6 +60,7 @@ public class SequenceProduceListener extends ListenerAdapter {
 
             String type = fins.isRead() ? "READ" : "WRITE";
             String eiString = ei == null ? "null" : ei.toString();
+            //System.out.println(eiString);
             String fiName = fi.getName();
             ReadWriteNode node = new ReadWriteNode(getNodeId(), eiString, fiName, type, currentThread.getName(), fins.getFileLocation());
             currentStateNodes.add(node);

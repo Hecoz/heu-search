@@ -15,48 +15,49 @@ import java.io.*;
 public class Main {
 
 
-  public static void main(String[] args) {
+    public static void main(String[] args) {
 
-      try{
-	ManageAccount.num = 10;
-          ManageAccount[] bank=new ManageAccount[ManageAccount.num];
-          String[] accountName={new String("A"),new String("B"),new String("C"),new String("D"),new String("E"),
-                                                       new String("F"),new String("G"),new String("H"),new String("I"),new String("J"),};
-          for (int j=0;j<ManageAccount.num;j++){
-              bank[j]=new ManageAccount(accountName[j],100);
-              ManageAccount.accounts[j].print();;//print it
-              }
+        try{
+
+            ManageAccount.num = 10;
+            ManageAccount[] bank=new ManageAccount[ManageAccount.num];
+            String[] accountName={new String("A"),new String("B"),new String("C"),new String("D"),new String("E"),
+                                    new String("F"),new String("G"),new String("H"),new String("I"),new String("J"),};
+            for (int j=0;j<ManageAccount.num;j++){
+                bank[j]=new ManageAccount(accountName[j],100);
+                ManageAccount.accounts[j].print();;//print it
+            }
 
 
- //start the threads
-        for (int k=0;k<ManageAccount.num;k++){
-              bank[k].start();
-              }
+            //start the threads
+            for (int k=0;k<ManageAccount.num;k++){
+                bank[k].start();
+            }
 
- // wait until all are finished
-        for (int k=0;k<ManageAccount.num;k++){
-              bank[k].join();
-              }
-        ManageAccount.printAllAccounts();
 
-        //updating the output file
-        boolean bug = false;
-	//flags which will indicate the kind of the bug
-        for (int k=0;k<ManageAccount.num;k++){
-            //System.out.println("account "+k+" has $"+ManageAccount.accounts[k].amount);
-            if(ManageAccount.accounts[k].amount<300){
-                          bug=true;
-                          }
-            else if(ManageAccount.accounts[k].amount>300){
-                          bug=true;
-                          }
-        }
+            // wait until all are finished
+            for (int k=0;k<ManageAccount.num;k++){
+                bank[k].join();
+            }
+            ManageAccount.printAllAccounts();
 
-        if(bug) 
-		throw new RuntimeException("bug found");
+            //updating the output file
+            boolean bug = false;
+            //flags which will indicate the kind of the bug
+            for (int k=0;k<ManageAccount.num;k++){
+                //System.out.println("account "+k+" has $"+ManageAccount.accounts[k].amount);
+                if(ManageAccount.accounts[k].amount<300){
+                    bug=true;
+                } else if(ManageAccount.accounts[k].amount>300){
+                    bug=true;
+                }
+            }
+
+            if(bug)
+            throw new RuntimeException("bug found");
 
         } catch(InterruptedException e){
         }
 
-  }//end of function main
+    }//end of function main
 }//end of class Main

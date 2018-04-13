@@ -10,8 +10,9 @@ import p_heu.listener.SequenceProduceListener;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Unicorn {
+public class Unicorn_old {
     public static void main(String[] args) {
+        Pattern.setPatternSet("unicorn");
         String[] str = new String[]{
                 "+classpath=out/production/heu_search",
                 "+search.class=p_heu.search.SingleExecutionSearch",

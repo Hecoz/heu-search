@@ -1,8 +1,9 @@
-
 public class CheckField {
+
 	static InstanceExample ex;
 	private int num;
 	public static void main(String[] args) throws InterruptedException {
+
 		ex = new InstanceExample();
 		Thread t1 = new Thread() {
 			public void run() {
@@ -15,6 +16,7 @@ public class CheckField {
 			}
 		};
 		t1.setName("123");
+
 		Thread t2 = new Thread() {
 			public void run() {
 				//int a = ex.number;

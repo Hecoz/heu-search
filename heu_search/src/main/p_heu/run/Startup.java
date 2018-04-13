@@ -29,7 +29,7 @@ public class Startup {
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.PatternDistanceBasedSearch",
-				"CheckField"};
+				"twoStage.Main"};
 
 		Config config = new Config(str);
 		BasicPatternFindingListener listener = new BasicPatternFindingListener(correctSeqs);
@@ -38,7 +38,7 @@ public class Startup {
 		JPF jpf = new JPF(config);
 		jpf.addListener(listener);
 		jpf.run();
-		System.out.println(listener.getErrorSequence());
+		System.out.println(listener.getErrorSequence().getPatterns());
 		System.out.println(listener.getCorrectSeqs().size());
 	}
 
@@ -47,7 +47,7 @@ public class Startup {
 		String[] str = new String[]{
 				"+classpath=out/production/heu_search",
 				"+search.class=p_heu.search.SingleExecutionSearch",
-				"CheckField"};
+				"twoStage.Main"};
 		Config config = new Config(str);
 		JPF jpf = new JPF(config);
 		SequenceProduceListener listener = new SequenceProduceListener();

@@ -22,11 +22,11 @@ public  class Airlinetickets implements Runnable{
 
     public Airlinetickets (String fileName, String Concurency){
         this.fileName = fileName;
-        try {
-            output = new FileOutputStream(fileName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
-        }
+//        try {
+//            output = new FileOutputStream(fileName);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+//        }
           if(Concurency.equals("little")) Num_of_tickets_issued = 10;
           if(Concurency.equals("average")) Num_of_tickets_issued = 100;
           if(Concurency.equals( "lot")) Num_of_tickets_issued = 5000;
@@ -71,11 +71,11 @@ public  class Airlinetickets implements Runnable{
         	//Num_Of_Seats_Sold += 50;
             System.out.println("SOLD "+ Num_Of_Seats_Sold + " Seats !!!");
 
-         try {
-             output = new FileOutputStream(fileName);
-         } catch (FileNotFoundException e) {
-             e.printStackTrace();  //To change body of catch statement use Options | File Templates.
-         }
+//         try {
+//             output = new FileOutputStream(fileName);
+//         } catch (FileNotFoundException e) {
+//             e.printStackTrace();  //To change body of catch statement use Options | File Templates.
+//         }
         String str1="< "+fileName+" , Concurency="+Concurency+" , "+"No Bug"+" >";
         String str2="< "+fileName+" , Concurency="+Concurency+" , "+"Interleaving"+" >";
         checkResult(str1,str2);

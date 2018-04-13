@@ -24,8 +24,8 @@ public class Main {
                c = hspn.x;
                hspn.y = c - 1;
                if(hspn.y <= 0 ){
-                   //System.out.println(hspn.y);
-                   assert hspn.y > 0 : " wrong detected ";
+                   System.out.println("hspn.y:"+hspn.y);
+                   assert hspn.y <= 0 : (" wrong detected " + hspn.y);
                }
             }
         };

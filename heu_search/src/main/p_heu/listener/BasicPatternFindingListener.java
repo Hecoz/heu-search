@@ -43,7 +43,7 @@ public class BasicPatternFindingListener extends ListenerAdapter {
     private void initCurrentState(VM vm,Search search) {
 
         DistanceBasedSearch dbsearch = (DistanceBasedSearch) search;
-        //从search中，获取正确的序列个数
+        //从search中，获取正确的序列
         correctSeqs = dbsearch.getCorrectSeqs();
         this.sequence = new Sequence(correctSeqs);
         currentState = new SearchState(vm.getStateId(),vm.getRestorableState());
